@@ -32,8 +32,8 @@ python generate_and_convert_dataset.py --verbose
 
 | Argument | Short | Description | Default |
 |----------|-------|-------------|---------|
-| `--root-dir` | `-r` | Operator project root directory | `/home/l00868164/ops_dataset` |
-| `--output-dir` | `-o` | Output directory for Parquet file | `/home/l00868164/ops_dataset/output` |
+| `--root-dir` | `-r` | Operator project root directory | `./` |
+| `--output-dir` | `-o` | Output directory for Parquet file | `./` |
 | `--parquet-filename` | `-p` | Output Parquet filename | `train.parquet` |
 | `--verbose` | `-v` | Enable detailed logging output | `False` |
 | `--log-level` | - | Logging level (DEBUG/INFO/WARNING/ERROR) | `INFO` |
