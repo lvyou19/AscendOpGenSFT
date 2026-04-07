@@ -21,14 +21,11 @@ claude_cmd = [
     "claude",
     "--dangerously-skip-permissions", 
     "--model",
-    "kimi",
+    "qwen35",
     "执行 AGENT.md 中的完整流程",
 ]
 
-# 2. 复制当前环境变量
-env = os.environ.copy()
-# 3. 添加或更新 IS_SANDBOX 变量
-env["IS_SANDBOX"] = "1"
+env = os.environ
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -57,13 +54,18 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    #  添加或更新 IS_SANDBOX 变量
+    env["IS_SANDBOX"] = "1"
+    env["ASCEND_AGENT_WORKDIR"] = "/home/l00868164/cv_agent_workdir"
+
     args = parse_args()
-    # ASCEND_OPGENSFT_WORKDIR配置为agnet的agent_workdir路径
-    workdir = Path(os.environ.get("ASCEND_OPGENSFT_WORKDIR", Path(__file__).resolve().parent))
-    agent_workdir = Path(os.environ.get("ASCEND_AGENT_WORKDIR", workdir / "agent_workdir"))
+    # ASCEND_AGENT_WORKDIR配置为agnet的agent_workdir路径
+    workdir = Path(os.environ.get("ASCEND_AGENT_WORKDIR"))
+    agent_workdir = workdir / "agent_workdir"
     current_task_dir = agent_workdir / "current_task"
     archive_root = workdir / "archive_tasks"
-
+    print(workdir)
+    print(agent_workdir)
     reference_file = Path(args.reference_py).expanduser().resolve()
     if not reference_file.is_file():
         raise FileNotFoundError(f"Reference file not found: {reference_file}")
