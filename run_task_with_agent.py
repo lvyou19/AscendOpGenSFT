@@ -58,9 +58,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-
-    workdir = Path(__file__).resolve().parent
-    agent_workdir = workdir / "agent_workdir"
+    # ASCEND_OPGENSFT_WORKDIR配置为agnet的agent_workdir路径
+    workdir = Path(os.environ.get("ASCEND_OPGENSFT_WORKDIR", Path(__file__).resolve().parent))
+    agent_workdir = Path(os.environ.get("ASCEND_AGENT_WORKDIR", workdir / "agent_workdir"))
     current_task_dir = agent_workdir / "current_task"
     archive_root = workdir / "archive_tasks"
 
