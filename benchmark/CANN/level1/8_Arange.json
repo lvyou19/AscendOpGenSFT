@@ -1,0 +1,12 @@
+{"case_id": "0", "start": "1", "end": "4096", "step": "1", "dtype": "int32"}
+{"case_id": "1", "start": "2.0", "end": "9.0", "step": "0.5", "dtype": "float32"}
+{"case_id": "2", "start": "-6.5", "end": "143.6", "step": "1.0", "dtype": "float16"}
+{"case_id": "3", "start": "-70.8", "end": "120.2", "step": "2.0", "dtype": "bfloat16"}
+{"case_id": "4", "start": "48.6", "end": "80.4", "step": "1.4", "dtype": "float32"}
+{"case_id": "5", "start": "44", "end": "1532", "step": "10", "dtype": "int32"}
+{"case_id": "6", "start": "-210", "end": "674", "step": "3", "dtype": "int64"}
+{"case_id": "7", "start": "92.7", "end": "112.9", "step": "0.8", "dtype": "float16"}
+{"case_id": "8", "start": "-2", "end": "157", "step": "4.0", "dtype": "bfloat16"}
+{"case_id": "9", "start": "-94.6", "end": "123.0", "step": "2.8", "dtype": "float32"}
+{"case_id": "10", "start": "402", "end": "1160", "step": "1", "dtype": "int32"}
+{"case_id": "11", "start": "444", "end": "1887", "step": "3", "dtype": "int64"}

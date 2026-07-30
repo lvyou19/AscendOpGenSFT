@@ -1,0 +1,14 @@
+{"case_id": "0", "input_shape": "[16,32]", "num_experts": "2", "x_dtype": "float16", "scale_dtype": "float16", "group_index_dtype": "int32", "has_offset": "false", "dst_type": "2"}
+{"case_id": "1", "input_shape": "[16,32]", "num_experts": "2", "x_dtype": "float16", "scale_dtype": "float16", "group_index_dtype": "int32", "has_offset": "true", "dst_type": "2"}
+{"case_id": "2", "input_shape": "[24,64]", "num_experts": "3", "x_dtype": "float16", "scale_dtype": "float16", "group_index_dtype": "int32", "has_offset": "false", "dst_type": "2"}
+{"case_id": "3", "input_shape": "[32,128]", "num_experts": "4", "x_dtype": "bfloat16", "scale_dtype": "bfloat16", "group_index_dtype": "int64", "has_offset": "false", "dst_type": "2"}
+{"case_id": "4", "input_shape": "[8,16]", "num_experts": "2", "x_dtype": "float32", "scale_dtype": "float32", "group_index_dtype": "int32", "has_offset": "true", "dst_type": "2"}
+{"case_id": "5", "input_shape": "[64,48]", "num_experts": "3", "x_dtype": "float16", "scale_dtype": "float16", "group_index_dtype": "int64", "has_offset": "true", "dst_type": "2"}
+{"case_id": "6", "input_shape": "[128,32]", "num_experts": "2", "x_dtype": "float16", "scale_dtype": "float16", "group_index_dtype": "int32", "has_offset": "false", "dst_type": "2"}
+{"case_id": "7", "input_shape": "[1,256]", "num_experts": "1", "x_dtype": "float16", "scale_dtype": "float16", "group_index_dtype": "int32", "has_offset": "false", "dst_type": "2"}
+{"case_id": "8", "input_shape": "[40,72]", "num_experts": "5", "x_dtype": "float16", "scale_dtype": "float16", "group_index_dtype": "int32", "has_offset": "false", "dst_type": "2"}
+{"case_id": "9", "input_shape": "[20,31]", "num_experts": "2", "x_dtype": "bfloat16", "scale_dtype": "bfloat16", "group_index_dtype": "int32", "has_offset": "false", "dst_type": "2"}
+{"case_id": "10", "input_shape": "[48,64]", "num_experts": "3", "x_dtype": "float16", "scale_dtype": "bfloat16", "group_index_dtype": "int32", "has_offset": "false", "dst_type": "2"}
+{"case_id": "11", "input_shape": "[96,128]", "num_experts": "6", "x_dtype": "float16", "scale_dtype": "float16", "group_index_dtype": "int64", "has_offset": "false", "dst_type": "2"}
+{"case_id": "12", "input_shape": "[16,64]", "num_experts": "2", "x_dtype": "float16", "scale_dtype": "float16", "group_index_dtype": "int32", "has_offset": "false", "dst_type": "29"}
+{"case_id": "13", "input_shape": "[32,128]", "num_experts": "3", "x_dtype": "bfloat16", "scale_dtype": "bfloat16", "group_index_dtype": "int32", "has_offset": "true", "dst_type": "29"}

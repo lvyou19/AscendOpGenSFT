@@ -1,0 +1,50 @@
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [1, 1, 2, 2]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [1, 1, 1, 1]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [1, 1, 1, 1]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [2, 2, 2, 2]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [2, 2, 2, 2]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [3, 3, 3, 3]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [3, 3, 3, 3]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [4, 4, 4, 4]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [4, 4, 4, 4]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [5, 5, 5, 5]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [5, 5, 5, 5]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [7, 7, 7, 7]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [7, 7, 7, 7]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [8, 8, 8, 8]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [8, 8, 8, 8]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [11, 11, 11, 11]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [11, 11, 11, 11]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [13, 13, 13, 13]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [13, 13, 13, 13]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [15, 15, 15, 15]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [15, 15, 15, 15]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [16, 16, 16, 16]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [16, 16, 16, 16]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [17, 17, 17, 17]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [17, 17, 17, 17]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [23, 23, 23, 23]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [23, 23, 23, 23]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [31, 31, 31, 31]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [31, 31, 31, 31]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [32, 32, 32, 32]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [32, 32, 32, 32]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [33, 33, 33, 33]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [33, 33, 33, 33]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [27, 27, 27, 27]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [27, 27, 27, 27]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [37, 37, 37, 37]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [37, 37, 37, 37]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [25, 25, 25, 25]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [25, 25, 25, 25]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [64, 5, 2, 22, 8]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [14, 215, 64]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [175, 8, 173]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [17, 23, 64]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [15, 186, 36, 11]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [52, 32, 187]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex128", "shape": [37, 88, 126]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [113, 29, 2, 206]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [40, 8, 23, 3, 32]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [110, 102, 2, 23]}]}
+{"inputs": [{"name": "x", "type": "tensor", "required": true, "dtype": "complex64", "shape": [7, 217, 198]}]}

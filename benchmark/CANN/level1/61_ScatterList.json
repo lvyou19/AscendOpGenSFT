@@ -1,0 +1,7 @@
+{"case_id": "0", "varRefShape": "[[32, 512, 128]]", "indiceShape": "[1, 2]", "updatesShape": "[1, 32, 512, 128]", "dtype": "float16", "reduce": "update", "axis": "-2", "mask": "[True]"}
+{"case_id": "1", "varRefShape": "[[8, 16, 32]]", "indiceShape": "[1, 2]", "updatesShape": "[1, 8, 16, 32]", "dtype": "float16", "reduce": "update", "axis": "-2", "mask": "[True]"}
+{"case_id": "2", "varRefShape": "[[64, 128]]", "indiceShape": "[1, 2]", "updatesShape": "[1, 64, 128]", "dtype": "float16", "reduce": "update", "axis": "-1", "mask": "[True]"}
+{"case_id": "3", "varRefShape": "[[32, 64, 64], [32, 64, 64], [32, 64, 64]]", "indiceShape": "[3, 2]", "updatesShape": "[3, 32, 64, 64]", "dtype": "float16", "reduce": "update", "axis": "-2", "mask": "[True, True, False]"}
+{"case_id": "4", "varRefShape": "[[8, 1024], [8, 1024]]", "indiceShape": "[2, 2]", "updatesShape": "[2, 8, 1024]", "dtype": "float16", "reduce": "update", "axis": "-1", "mask": "[False, False]"}
+{"case_id": "5", "varRefShape": "[[5, 3, 4]]", "indiceShape": "[1, 2]", "updatesShape": "[1, 5, 3, 4]", "dtype": "float16", "reduce": "update", "axis": "-1", "mask": "[False]"}
+{"case_id": "6", "varRefShape": "[[256, 512]]", "indiceShape": "[1, 2]", "updatesShape": "[1, 256, 512]", "dtype": "float16", "reduce": "update", "axis": "-1", "mask": "[True]"}

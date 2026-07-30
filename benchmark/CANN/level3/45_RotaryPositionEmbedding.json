@@ -1,0 +1,12 @@
+{"case_id": "0", "B": "1", "N": "2", "S": "2", "D": "64", "dtype": "float16", "mode": "0"}
+{"case_id": "1", "B": "2", "N": "1", "S": "4", "D": "128", "dtype": "float16", "mode": "0"}
+{"case_id": "2", "B": "1", "N": "4", "S": "1", "D": "32", "dtype": "bfloat16", "mode": "0"}
+{"case_id": "3", "B": "2", "N": "2", "S": "2", "D": "256", "dtype": "float16", "mode": "1"}
+{"case_id": "4", "B": "1", "N": "1", "S": "8", "D": "64", "dtype": "bfloat16", "mode": "1"}
+{"case_id": "5", "B": "1", "N": "2", "S": "2", "D": "128", "dtype": "float16", "mode": "0"}
+{"case_id": "6", "B": "2", "N": "1", "S": "1", "D": "256", "dtype": "float16", "mode": "1"}
+{"case_id": "7", "B": "1", "N": "1", "S": "4", "D": "128", "dtype": "bfloat16", "mode": "0"}
+{"case_id": "8", "B": "1", "N": "2", "S": "2", "D": "96", "dtype": "float16", "mode": "1"}
+{"case_id": "9", "B": "2", "N": "2", "S": "1", "D": "64", "dtype": "bfloat16", "mode": "1"}
+{"case_id": "10", "B": "1", "N": "1", "S": "16", "D": "32", "dtype": "float32", "mode": "0"}
+{"case_id": "11", "B": "1", "N": "1", "S": "1", "D": "128", "dtype": "float16", "mode": "1"}

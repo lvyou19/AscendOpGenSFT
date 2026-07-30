@@ -1,0 +1,5 @@
+{"case_id": "0", "input_shape": "[1536]", "n": "1536"}
+{"case_id": "1", "input_shape": "[16, 2048]", "n": "32768"}
+{"case_id": "2", "input_shape": "[1024, 256]", "n": "262144"}
+{"case_id": "3", "input_shape": "[32, 16, 256]", "n": "131072"}
+{"case_id": "4", "input_shape": "[4096]", "n": "4096"}

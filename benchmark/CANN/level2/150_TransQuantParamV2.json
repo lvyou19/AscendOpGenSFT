@@ -1,0 +1,12 @@
+{"case_id": "0", "scale_shape": "[16]", "offset_shape": "[16]", "round_mode": "0"}
+{"case_id": "1", "scale_shape": "[1]", "offset_shape": "[1]", "round_mode": "0"}
+{"case_id": "2", "scale_shape": "[8]", "offset_shape": "", "round_mode": "0"}
+{"case_id": "3", "scale_shape": "[4]", "offset_shape": "[4]", "round_mode": "0"}
+{"case_id": "4", "scale_shape": "[32]", "offset_shape": "[32]", "round_mode": "0"}
+{"case_id": "5", "scale_shape": "[2]", "offset_shape": "[2]", "round_mode": "0"}
+{"case_id": "6", "scale_shape": "[16]", "offset_shape": "", "round_mode": "0"}
+{"case_id": "7", "scale_shape": "[24]", "offset_shape": "", "round_mode": "0"}
+{"case_id": "8", "scale_shape": "[8]", "offset_shape": "[8]", "round_mode": "0"}
+{"case_id": "9", "scale_shape": "[12]", "offset_shape": "[12]", "round_mode": "0"}
+{"case_id": "10", "scale_shape": "[16]", "offset_shape": "[1]", "round_mode": "0"}
+{"case_id": "11", "scale_shape": "[10]", "offset_shape": "[1]", "round_mode": "0"}

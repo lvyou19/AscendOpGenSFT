@@ -1,0 +1,8 @@
+{"case_id": "0", "num_tensors": "1", "input_shapes": "[[10]]", "dtype": "float32", "round_mode": "1"}
+{"case_id": "1", "num_tensors": "2", "input_shapes": "[[5],[5,5]]", "dtype": "float16", "round_mode": "2"}
+{"case_id": "2", "num_tensors": "3", "input_shapes": "[[10,10],[5],[2,2,2]]", "dtype": "bfloat16", "round_mode": "3"}
+{"case_id": "3", "num_tensors": "1", "input_shapes": "[[20]]", "dtype": "float32", "round_mode": "4"}
+{"case_id": "4", "num_tensors": "4", "input_shapes": "[[3,3],[1,10],[7],[1]]", "dtype": "float16", "round_mode": "5"}
+{"case_id": "5", "num_tensors": "2", "input_shapes": "[[100],[100,100]]", "dtype": "float16", "round_mode": "7"}
+{"case_id": "6", "num_tensors": "1", "input_shapes": "[[1]]", "dtype": "bfloat16", "round_mode": "1"}
+{"case_id": "7", "num_tensors": "1", "input_shapes": "[[20,20]]", "dtype": "float16", "round_mode": "5"}

@@ -1,0 +1,7 @@
+{"case_id": "0", "x_shape": "[1, 32, 10, 10]", "dtype": "float32", "num_groups": "8", "swish_scale": "1.0", "dgamma_is_require": "True", "dbeta_is_require": "True"}
+{"case_id": "1", "x_shape": "[4, 64, 5, 5]", "dtype": "float16", "num_groups": "16", "swish_scale": "1.0", "dgamma_is_require": "True", "dbeta_is_require": "True"}
+{"case_id": "2", "x_shape": "[2, 16, 20, 20]", "dtype": "bfloat16", "num_groups": "4", "swish_scale": "1.0", "dgamma_is_require": "False", "dbeta_is_require": "False"}
+{"case_id": "3", "x_shape": "[8, 128, 7, 7]", "dtype": "float32", "num_groups": "32", "swish_scale": "0.5", "dgamma_is_require": "True", "dbeta_is_require": "False"}
+{"case_id": "4", "x_shape": "[16, 32, 2, 2]", "dtype": "float16", "num_groups": "8", "swish_scale": "1.0", "dgamma_is_require": "False", "dbeta_is_require": "True"}
+{"case_id": "5", "x_shape": "[100, 32]", "dtype": "float16", "num_groups": "8", "swish_scale": "1.0", "dgamma_is_require": "True", "dbeta_is_require": "True"}
+{"case_id": "6", "x_shape": "[64, 256, 1, 1]", "dtype": "float32", "num_groups": "64", "swish_scale": "1.0", "dgamma_is_require": "True", "dbeta_is_require": "True"}

@@ -32,7 +32,7 @@ STAT = SCRIPT_DIR / "stat_operators.py"
 AUGMENT = SCRIPT_DIR / "3_batch_datasets_augment.py"
 COMBINE = SCRIPT_DIR / "4_combine_into_one_jsonl.py"
 
-DEFAULT_DATA_ROOT = "/home/l00899543/SFT_DATASETS/第二批"
+DEFAULT_DATA_ROOT = "/home/SFT_DATASETS/"
 
 
 def run(cmd, capture=False):

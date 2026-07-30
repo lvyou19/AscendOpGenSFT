@@ -1,0 +1,13 @@
+{"case_id": "0", "batch_size": "2", "vocab_size": "100", "dtype": "float32", "mode": "topk_topp", "p_value": "0.9", "k_value": "10"}
+{"case_id": "1", "batch_size": "4", "vocab_size": "512", "dtype": "float32", "mode": "topk_topp", "p_value": "0.95", "k_value": "20"}
+{"case_id": "2", "batch_size": "1", "vocab_size": "1024", "dtype": "float16", "mode": "topk_topp", "p_value": "0.9", "k_value": "50"}
+{"case_id": "3", "batch_size": "8", "vocab_size": "256", "dtype": "bfloat16", "mode": "topk_topp", "p_value": "0.85", "k_value": "15"}
+{"case_id": "4", "batch_size": "2", "vocab_size": "100", "dtype": "float32", "mode": "topk", "p_value": "", "k_value": "10"}
+{"case_id": "5", "batch_size": "4", "vocab_size": "512", "dtype": "float16", "mode": "topk", "p_value": "", "k_value": "20"}
+{"case_id": "6", "batch_size": "1", "vocab_size": "1024", "dtype": "bfloat16", "mode": "topk", "p_value": "", "k_value": "50"}
+{"case_id": "7", "batch_size": "2", "vocab_size": "100", "dtype": "float32", "mode": "topp", "p_value": "0.9", "k_value": ""}
+{"case_id": "8", "batch_size": "4", "vocab_size": "512", "dtype": "float16", "mode": "topp", "p_value": "0.95", "k_value": ""}
+{"case_id": "9", "batch_size": "1", "vocab_size": "1024", "dtype": "bfloat16", "mode": "topp", "p_value": "0.85", "k_value": ""}
+{"case_id": "10", "batch_size": "16", "vocab_size": "128", "dtype": "float32", "mode": "topk_topp", "p_value": "0.9", "k_value": "5"}
+{"case_id": "11", "batch_size": "1", "vocab_size": "2048", "dtype": "float16", "mode": "topk", "p_value": "", "k_value": "100"}
+{"case_id": "12", "batch_size": "2", "vocab_size": "500", "dtype": "bfloat16", "mode": "topp", "p_value": "0.92", "k_value": ""}

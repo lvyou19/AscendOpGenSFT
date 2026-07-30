@@ -1,0 +1,4 @@
+{"case_id": "0", "input_shape": "[1, 2, 4, 4]", "num_features": "2", "dtype": "int8", "epsilon": "1e-5", "affine": "True"}
+{"case_id": "1", "input_shape": "[4, 8, 16, 16]", "num_features": "8", "dtype": "int8", "epsilon": "1e-5", "affine": "True"}
+{"case_id": "2", "input_shape": "[2, 64, 32, 32]", "num_features": "64", "dtype": "int8", "epsilon": "1e-5", "affine": "True"}
+{"case_id": "3", "input_shape": "[2, 4, 8, 8]", "num_features": "4", "dtype": "int8", "epsilon": "1e-5", "affine": "False"}

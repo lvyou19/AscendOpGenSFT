@@ -1,0 +1,4 @@
+{"case_id": "0", "xyz1_shape": "[2,4,2]", "xyz2_shape": "[2,4,2]", "idx1_shape": "[2,4]", "idx2_shape": "[2,4]", "gradDist1_shape": "[2,4]", "gradDist2_shape": "[2,4]", "dtype": "float32"}
+{"case_id": "1", "xyz1_shape": "[2,2,2]", "xyz2_shape": "[2,2,2]", "idx1_shape": "[2,2]", "idx2_shape": "[2,2]", "gradDist1_shape": "[2,2]", "gradDist2_shape": "[2,2]", "dtype": "float32"}
+{"case_id": "2", "xyz1_shape": "[1,10,2]", "xyz2_shape": "[1,10,2]", "idx1_shape": "[1,10]", "idx2_shape": "[1,10]", "gradDist1_shape": "[1,10]", "gradDist2_shape": "[1,10]", "dtype": "float32"}
+{"case_id": "3", "xyz1_shape": "[3,5,2]", "xyz2_shape": "[3,5,2]", "idx1_shape": "[3,5]", "idx2_shape": "[3,5]", "gradDist1_shape": "[3,5]", "gradDist2_shape": "[3,5]", "dtype": "float32"}

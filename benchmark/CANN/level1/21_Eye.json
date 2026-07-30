@@ -1,0 +1,6 @@
+{"case_id": "0", "batch_shape": "[48]", "num_rows": "128", "num_columns": "128", "dtype": "float16"}
+{"case_id": "1", "batch_shape": "[32]", "num_rows": "64", "num_columns": "64", "dtype": "float32"}
+{"case_id": "2", "batch_shape": "[96]", "num_rows": "256", "num_columns": "256", "dtype": "float32"}
+{"case_id": "3", "batch_shape": "[64]", "num_rows": "512", "num_columns": "512", "dtype": "int32"}
+{"case_id": "4", "batch_shape": "[32]", "num_rows": "16", "num_columns": "32", "dtype": "float16"}
+{"case_id": "5", "batch_shape": "[48]", "num_rows": "256", "num_columns": "512", "dtype": "int32"}

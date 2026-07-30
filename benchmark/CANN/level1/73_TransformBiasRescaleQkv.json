@@ -1,0 +1,8 @@
+{"case_id": "0", "batch": "2", "token": "128", "dim": "256", "num_heads": "8", "dtype": "float16"}
+{"case_id": "1", "batch": "4", "token": "64", "dim": "512", "num_heads": "8", "dtype": "float16"}
+{"case_id": "2", "batch": "1", "token": "32", "dim": "768", "num_heads": "12", "dtype": "float32"}
+{"case_id": "3", "batch": "2", "token": "256", "dim": "256", "num_heads": "8", "dtype": "bfloat16"}
+{"case_id": "4", "batch": "8", "token": "64", "dim": "1024", "num_heads": "16", "dtype": "float16"}
+{"case_id": "5", "batch": "1", "token": "64", "dim": "128", "num_heads": "4", "dtype": "float16"}
+{"case_id": "6", "batch": "16", "token": "32", "dim": "256", "num_heads": "8", "dtype": "float16"}
+{"case_id": "7", "batch": "2", "token": "512", "dim": "512", "num_heads": "16", "dtype": "bfloat16"}

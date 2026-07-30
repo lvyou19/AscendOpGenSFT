@@ -1,0 +1,8 @@
+{"case_id": "0", "input_shape": "[128, 512]", "normalized_shape": "[512]", "dtype": "float16", "alpha": "0.3", "epsilon": "1e-6"}
+{"case_id": "1", "input_shape": "[256, 16, 384]", "normalized_shape": "[16, 384]", "dtype": "float16", "alpha": "0.5", "epsilon": "1e-6"}
+{"case_id": "2", "input_shape": "[128, 256, 8]", "normalized_shape": "[256, 8]", "dtype": "float32", "alpha": "0.3", "epsilon": "1e-6"}
+{"case_id": "3", "input_shape": "[1, 2, 8]", "normalized_shape": "[8]", "dtype": "float32", "alpha": "0.1", "epsilon": "1e-6"}
+{"case_id": "4", "input_shape": "[4096, 2048]", "normalized_shape": "[2048]", "dtype": "float16", "alpha": "0.3", "epsilon": "1e-6"}
+{"case_id": "5", "input_shape": "[8, 1024, 512]", "normalized_shape": "[512]", "dtype": "float32", "alpha": "0.9", "epsilon": "1e-6"}
+{"case_id": "6", "input_shape": "[32, 64, 128]", "normalized_shape": "[64, 128]", "dtype": "float16", "alpha": "0.3", "epsilon": "1e-6"}
+{"case_id": "7", "input_shape": "[64, 2048]", "normalized_shape": "[2048]", "dtype": "float16", "alpha": "0.6", "epsilon": "1e-6"}

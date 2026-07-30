@@ -1,0 +1,5 @@
+{"case_id": "0", "dtype": "float16", "n": "1", "c": "3", "h_in": "8", "w_in": "8", "h_out": "16", "w_out": "16", "align_corners": "False"}
+{"case_id": "1", "dtype": "float32", "n": "1", "c": "3", "h_in": "16", "w_in": "16", "h_out": "32", "w_out": "32", "align_corners": "False"}
+{"case_id": "2", "dtype": "float32", "n": "2", "c": "3", "h_in": "32", "w_in": "32", "h_out": "64", "w_out": "64", "align_corners": "True"}
+{"case_id": "3", "dtype": "bfloat16", "n": "1", "c": "1", "h_in": "4", "w_in": "4", "h_out": "8", "w_out": "8", "align_corners": "False"}
+{"case_id": "4", "dtype": "float32", "n": "1", "c": "1", "h_in": "10", "w_in": "10", "h_out": "20", "w_out": "20", "align_corners": "False"}

@@ -1,0 +1,6 @@
+{"case_id": "0", "var_ref_shape": "[10,10]", "input_value_shape": "[5,10]", "begin_val": "[0]", "end_val": "[5]", "strides_val": "[1]", "axes_optional_val": "[0]", "dtype": "float16"}
+{"case_id": "1", "var_ref_shape": "[100]", "input_value_shape": "[20]", "begin_val": "[5]", "end_val": "[25]", "strides_val": "[1]", "axes_optional_val": "[0]", "dtype": "float16"}
+{"case_id": "2", "var_ref_shape": "[32,32,32]", "input_value_shape": "[16,16,32]", "begin_val": "[0,0]", "end_val": "[32,16]", "strides_val": "[2,1]", "axes_optional_val": "[0,1]", "dtype": "float32"}
+{"case_id": "3", "var_ref_shape": "[1,4096]", "input_value_shape": "[1,4096]", "begin_val": "[0,0]", "end_val": "[1,4096]", "strides_val": "[1,1]", "axes_optional_val": "[0,1]", "dtype": "float16"}
+{"case_id": "4", "var_ref_shape": "[256,384,128]", "input_value_shape": "[256,192,128]", "begin_val": "[0,0,0]", "end_val": "[256,384,128]", "strides_val": "[1,2,1]", "axes_optional_val": "[0,1,2]", "dtype": "float32"}
+{"case_id": "5", "var_ref_shape": "[4,3]", "input_value_shape": "[2,2]", "begin_val": "[1,0]", "end_val": "[4,2]", "strides_val": "[2,1]", "axes_optional_val": "[0,1]", "dtype": "float32"}

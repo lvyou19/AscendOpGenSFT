@@ -1,0 +1,10 @@
+{"case_id": "0", "num_tokens": "4", "num_q_heads": "8", "num_kv_heads": "2", "head_size": "128", "rotary_dim": "128", "dtype": "float32", "is_neox_style": "1", "mrope_section": "0,0,0", "cache_mode": "0"}
+{"case_id": "1", "num_tokens": "4", "num_q_heads": "8", "num_kv_heads": "2", "head_size": "128", "rotary_dim": "128", "dtype": "float32", "is_neox_style": "0", "mrope_section": "0,0,0", "cache_mode": "0"}
+{"case_id": "2", "num_tokens": "8", "num_q_heads": "16", "num_kv_heads": "4", "head_size": "128", "rotary_dim": "64", "dtype": "float16", "is_neox_style": "1", "mrope_section": "0,0,0", "cache_mode": "0"}
+{"case_id": "3", "num_tokens": "8", "num_q_heads": "16", "num_kv_heads": "4", "head_size": "128", "rotary_dim": "64", "dtype": "float16", "is_neox_style": "0", "mrope_section": "0,0,0", "cache_mode": "0"}
+{"case_id": "4", "num_tokens": "2", "num_q_heads": "8", "num_kv_heads": "8", "head_size": "64", "rotary_dim": "64", "dtype": "float32", "is_neox_style": "1", "mrope_section": "0,0,0", "cache_mode": "0"}
+{"case_id": "5", "num_tokens": "2", "num_q_heads": "8", "num_kv_heads": "8", "head_size": "64", "rotary_dim": "64", "dtype": "float32", "is_neox_style": "0", "mrope_section": "0,0,0", "cache_mode": "0"}
+{"case_id": "6", "num_tokens": "1", "num_q_heads": "4", "num_kv_heads": "2", "head_size": "128", "rotary_dim": "128", "dtype": "float16", "is_neox_style": "1", "mrope_section": "0,0,0", "cache_mode": "0"}
+{"case_id": "7", "num_tokens": "1", "num_q_heads": "4", "num_kv_heads": "2", "head_size": "128", "rotary_dim": "128", "dtype": "float16", "is_neox_style": "0", "mrope_section": "0,0,0", "cache_mode": "0"}
+{"case_id": "8", "num_tokens": "16", "num_q_heads": "32", "num_kv_heads": "8", "head_size": "128", "rotary_dim": "128", "dtype": "float32", "is_neox_style": "1", "mrope_section": "0,0,0", "cache_mode": "0"}
+{"case_id": "9", "num_tokens": "16", "num_q_heads": "32", "num_kv_heads": "8", "head_size": "128", "rotary_dim": "64", "dtype": "float16", "is_neox_style": "1", "mrope_section": "0,0,0", "cache_mode": "0"}

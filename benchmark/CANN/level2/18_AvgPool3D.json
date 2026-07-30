@@ -1,0 +1,12 @@
+{"case_id": "0", "dtype": "bfloat16", "shape": "[1,24,256,1,16]", "ksize": "[1,1,1]", "strides": "[411,411,411]", "pads": "[0,0,0]", "ceil_mode": "True", "count_include_pad": "True", "divisor_override": "75"}
+{"case_id": "1", "dtype": "bfloat16", "shape": "[1,24,256,1,16]", "ksize": "[1,1,1]", "strides": "[411,411,411]", "pads": "[0,0,0]", "ceil_mode": "True", "count_include_pad": "False", "divisor_override": "75"}
+{"case_id": "2", "dtype": "bfloat16", "shape": "[17,1,64,7,24]", "ksize": "[5,5,5]", "strides": "[1,1,1]", "pads": "[0,0,0]", "ceil_mode": "False", "count_include_pad": "True", "divisor_override": "68"}
+{"case_id": "3", "dtype": "bfloat16", "shape": "[17,1,64,7,24]", "ksize": "[5,5,5]", "strides": "[1,1,1]", "pads": "[0,0,0]", "ceil_mode": "False", "count_include_pad": "False", "divisor_override": "68"}
+{"case_id": "4", "dtype": "float16", "shape": "[1,24,256,1,16]", "ksize": "[1,1,1]", "strides": "[411,411,411]", "pads": "[0,0,0]", "ceil_mode": "True", "count_include_pad": "True", "divisor_override": "75"}
+{"case_id": "5", "dtype": "float16", "shape": "[1,24,256,1,16]", "ksize": "[1,1,1]", "strides": "[411,411,411]", "pads": "[0,0,0]", "ceil_mode": "True", "count_include_pad": "False", "divisor_override": "75"}
+{"case_id": "6", "dtype": "float16", "shape": "[17,1,64,7,24]", "ksize": "[5,5,5]", "strides": "[1,1,1]", "pads": "[0,0,0]", "ceil_mode": "False", "count_include_pad": "True", "divisor_override": "68"}
+{"case_id": "7", "dtype": "float16", "shape": "[17,1,64,7,24]", "ksize": "[5,5,5]", "strides": "[1,1,1]", "pads": "[0,0,0]", "ceil_mode": "False", "count_include_pad": "False", "divisor_override": "68"}
+{"case_id": "8", "dtype": "float32", "shape": "[1,24,256,1,16]", "ksize": "[1,1,1]", "strides": "[411,411,411]", "pads": "[0,0,0]", "ceil_mode": "True", "count_include_pad": "True", "divisor_override": "75"}
+{"case_id": "9", "dtype": "float32", "shape": "[1,24,256,1,16]", "ksize": "[1,1,1]", "strides": "[411,411,411]", "pads": "[0,0,0]", "ceil_mode": "True", "count_include_pad": "False", "divisor_override": "75"}
+{"case_id": "10", "dtype": "float32", "shape": "[17,1,64,7,24]", "ksize": "[5,5,5]", "strides": "[1,1,1]", "pads": "[0,0,0]", "ceil_mode": "False", "count_include_pad": "True", "divisor_override": "68"}
+{"case_id": "11", "dtype": "float32", "shape": "[17,1,64,7,24]", "ksize": "[5,5,5]", "strides": "[1,1,1]", "pads": "[0,0,0]", "ceil_mode": "False", "count_include_pad": "False", "divisor_override": "68"}

@@ -1,0 +1,15 @@
+{"case_id": "0", "input_shape": "[2,3,16]", "dim": "2", "size": "4", "step": "2", "dtype": "float16"}
+{"case_id": "1", "input_shape": "[4,8,16]", "dim": "1", "size": "3", "step": "2", "dtype": "float16"}
+{"case_id": "2", "input_shape": "[8,24]", "dim": "1", "size": "5", "step": "3", "dtype": "float16"}
+{"case_id": "3", "input_shape": "[2,2,4,8]", "dim": "3", "size": "2", "step": "1", "dtype": "float16"}
+{"case_id": "4", "input_shape": "[2,4,32]", "dim": "2", "size": "8", "step": "4", "dtype": "float16"}
+{"case_id": "5", "input_shape": "[2,3,16]", "dim": "2", "size": "4", "step": "2", "dtype": "float32"}
+{"case_id": "6", "input_shape": "[4,8,16]", "dim": "1", "size": "3", "step": "2", "dtype": "float32"}
+{"case_id": "7", "input_shape": "[8,24]", "dim": "1", "size": "5", "step": "3", "dtype": "float32"}
+{"case_id": "8", "input_shape": "[2,2,4,8]", "dim": "3", "size": "2", "step": "1", "dtype": "float32"}
+{"case_id": "9", "input_shape": "[2,4,32]", "dim": "2", "size": "8", "step": "4", "dtype": "float32"}
+{"case_id": "10", "input_shape": "[2,3,16]", "dim": "2", "size": "4", "step": "2", "dtype": "bfloat16"}
+{"case_id": "11", "input_shape": "[4,8,16]", "dim": "1", "size": "3", "step": "2", "dtype": "bfloat16"}
+{"case_id": "12", "input_shape": "[8,24]", "dim": "1", "size": "5", "step": "3", "dtype": "bfloat16"}
+{"case_id": "13", "input_shape": "[2,2,4,8]", "dim": "3", "size": "2", "step": "1", "dtype": "bfloat16"}
+{"case_id": "14", "input_shape": "[2,4,32]", "dim": "2", "size": "8", "step": "4", "dtype": "bfloat16"}

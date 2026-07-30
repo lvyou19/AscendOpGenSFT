@@ -1,0 +1,11 @@
+{"case_id": "0", "dtype": "float32", "N": "1", "C": "3", "H_in": "8", "W_in": "8", "H_out": "16", "W_out": "16", "align_corners": "false"}
+{"case_id": "1", "dtype": "float32", "N": "1", "C": "3", "H_in": "8", "W_in": "8", "H_out": "16", "W_out": "16", "align_corners": "true"}
+{"case_id": "2", "dtype": "float32", "N": "2", "C": "4", "H_in": "16", "W_in": "16", "H_out": "32", "W_out": "32", "align_corners": "false"}
+{"case_id": "3", "dtype": "float32", "N": "2", "C": "4", "H_in": "16", "W_in": "16", "H_out": "32", "W_out": "32", "align_corners": "true"}
+{"case_id": "4", "dtype": "float32", "N": "1", "C": "1", "H_in": "4", "W_in": "4", "H_out": "8", "W_out": "8", "align_corners": "false"}
+{"case_id": "5", "dtype": "float32", "N": "1", "C": "1", "H_in": "4", "W_in": "4", "H_out": "8", "W_out": "8", "align_corners": "true"}
+{"case_id": "6", "dtype": "float16", "N": "1", "C": "1", "H_in": "4", "W_in": "4", "H_out": "8", "W_out": "8", "align_corners": "true"}
+{"case_id": "7", "dtype": "float32", "N": "1", "C": "3", "H_in": "8", "W_in": "8", "H_out": "4", "W_out": "4", "align_corners": "false"}
+{"case_id": "8", "dtype": "float32", "N": "1", "C": "3", "H_in": "8", "W_in": "8", "H_out": "4", "W_out": "4", "align_corners": "true"}
+{"case_id": "9", "dtype": "float32", "N": "1", "C": "3", "H_in": "16", "W_in": "16", "H_out": "8", "W_out": "8", "align_corners": "false"}
+{"case_id": "10", "dtype": "float32", "N": "1", "C": "3", "H_in": "16", "W_in": "16", "H_out": "8", "W_out": "8", "align_corners": "true"}

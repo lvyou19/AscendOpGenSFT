@@ -1,0 +1,4 @@
+{"case_id": "0", "input_shape": "[16, 1024]", "dtype": "float32", "tol": "1e-4"}
+{"case_id": "1", "input_shape": "[4, 8]", "dtype": "bfloat16", "tol": "1e-4"}
+{"case_id": "2", "input_shape": "[1, 1]", "dtype": "float16", "tol": "1e-4"}
+{"case_id": "3", "input_shape": "[32, 8]", "dtype": "float32", "tol": "1e-3"}

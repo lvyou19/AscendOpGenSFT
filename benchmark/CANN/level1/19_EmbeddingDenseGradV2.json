@@ -1,0 +1,17 @@
+{"case_id": "0", "grad_shape": "[10, 800]", "num_weights": "100", "dtype": "float32", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "1", "grad_shape": "[32, 1600]", "num_weights": "200", "dtype": "float32", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "2", "grad_shape": "[64, 3200]", "num_weights": "500", "dtype": "float32", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "3", "grad_shape": "[10, 800]", "num_weights": "100", "dtype": "float16", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "4", "grad_shape": "[32, 1600]", "num_weights": "200", "dtype": "float16", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "5", "grad_shape": "[64, 3200]", "num_weights": "500", "dtype": "float16", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "6", "grad_shape": "[10, 800]", "num_weights": "100", "dtype": "bfloat16", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "7", "grad_shape": "[32, 1600]", "num_weights": "200", "dtype": "bfloat16", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "8", "grad_shape": "[10, 800]", "num_weights": "100", "dtype": "float32", "padding_idx": "0", "scale_grad_by_freq": "0"}
+{"case_id": "9", "grad_shape": "[32, 1600]", "num_weights": "200", "dtype": "float32", "padding_idx": "5", "scale_grad_by_freq": "0"}
+{"case_id": "10", "grad_shape": "[10, 800]", "num_weights": "100", "dtype": "float32", "padding_idx": "-1", "scale_grad_by_freq": "1"}
+{"case_id": "11", "grad_shape": "[32, 1600]", "num_weights": "200", "dtype": "float32", "padding_idx": "-1", "scale_grad_by_freq": "1"}
+{"case_id": "12", "grad_shape": "[64, 3200]", "num_weights": "500", "dtype": "float16", "padding_idx": "-1", "scale_grad_by_freq": "1"}
+{"case_id": "13", "grad_shape": "[10, 800]", "num_weights": "100", "dtype": "bfloat16", "padding_idx": "0", "scale_grad_by_freq": "1"}
+{"case_id": "14", "grad_shape": "[16, 4, 800]", "num_weights": "100", "dtype": "float32", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "15", "grad_shape": "[8, 8, 1600]", "num_weights": "200", "dtype": "float16", "padding_idx": "-1", "scale_grad_by_freq": "0"}
+{"case_id": "16", "grad_shape": "[4, 16, 3200]", "num_weights": "500", "dtype": "bfloat16", "padding_idx": "-1", "scale_grad_by_freq": "1"}

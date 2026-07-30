@@ -1,0 +1,5 @@
+{"case_id": "0", "input_shape": "[8, 4]", "normalized_shape": "[4]", "dtype": "float16", "quant_mode": "dynamic", "epsilon": "1e-5", "additional_output": "true", "div_mode": "true"}
+{"case_id": "1", "input_shape": "[1, 512]", "normalized_shape": "[512]", "dtype": "float16", "quant_mode": "dynamic", "epsilon": "1e-5", "additional_output": "true", "div_mode": "true"}
+{"case_id": "2", "input_shape": "[8, 512]", "normalized_shape": "[512]", "dtype": "float16", "quant_mode": "dynamic", "epsilon": "1e-5", "additional_output": "true", "div_mode": "true"}
+{"case_id": "3", "input_shape": "[1, 256]", "normalized_shape": "[256]", "dtype": "float16", "quant_mode": "static", "epsilon": "1e-5", "additional_output": "true", "div_mode": "true"}
+{"case_id": "4", "input_shape": "[8, 256]", "normalized_shape": "[256]", "dtype": "float16", "quant_mode": "static", "epsilon": "1e-5", "additional_output": "true", "div_mode": "true"}

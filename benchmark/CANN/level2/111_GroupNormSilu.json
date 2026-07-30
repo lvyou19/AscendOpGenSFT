@@ -1,0 +1,16 @@
+{"case_id": "0", "x_shape": "[2, 32, 4, 4]", "dtype": "float32", "num_groups": "8", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "1", "x_shape": "[4, 64, 5, 5]", "dtype": "float16", "num_groups": "16", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "2", "x_shape": "[2, 16, 20, 20]", "dtype": "float32", "num_groups": "4", "eps": "1e-5", "activate_silu": "False"}
+{"case_id": "3", "x_shape": "[1, 32, 10, 10]", "dtype": "float32", "num_groups": "8", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "4", "x_shape": "[8, 128, 7, 7]", "dtype": "float32", "num_groups": "32", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "5", "x_shape": "[2, 8, 3, 3]", "dtype": "float16", "num_groups": "2", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "6", "x_shape": "[16, 64, 8, 8]", "dtype": "float16", "num_groups": "16", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "7", "x_shape": "[16, 32, 8, 8]", "dtype": "float32", "num_groups": "8", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "8", "x_shape": "[4, 64, 1, 1]", "dtype": "float16", "num_groups": "16", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "9", "x_shape": "[2, 32, 1, 1]", "dtype": "float32", "num_groups": "8", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "10", "x_shape": "[4, 64, 1, 1]", "dtype": "float32", "num_groups": "16", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "11", "x_shape": "[1, 32, 1, 1]", "dtype": "float32", "num_groups": "8", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "12", "x_shape": "[8, 128, 1, 1]", "dtype": "float32", "num_groups": "32", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "13", "x_shape": "[1, 32, 4, 4]", "dtype": "float16", "num_groups": "32", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "14", "x_shape": "[1, 64, 8, 8]", "dtype": "float16", "num_groups": "32", "eps": "1e-5", "activate_silu": "True"}
+{"case_id": "15", "x_shape": "[1, 32, 10, 10]", "dtype": "float16", "num_groups": "32", "eps": "1e-5", "activate_silu": "True"}

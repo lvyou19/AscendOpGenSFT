@@ -1,0 +1,16 @@
+{"case_id": "0", "input_shape": "[4, 16]", "has_activate": "true", "has_bias": "false", "bias_dtype": "none", "output_dtype": "1"}
+{"case_id": "1", "input_shape": "[8, 32]", "has_activate": "false", "has_bias": "false", "bias_dtype": "none", "output_dtype": "1"}
+{"case_id": "2", "input_shape": "[2, 64]", "has_activate": "true", "has_bias": "true", "bias_dtype": "int32", "output_dtype": "1"}
+{"case_id": "3", "input_shape": "[6, 24]", "has_activate": "false", "has_bias": "true", "bias_dtype": "int32", "output_dtype": "27"}
+{"case_id": "4", "input_shape": "[4, 32]", "has_activate": "true", "has_bias": "true", "bias_dtype": "float32", "output_dtype": "1"}
+{"case_id": "5", "input_shape": "[3, 48]", "has_activate": "true", "has_bias": "true", "bias_dtype": "float16", "output_dtype": "1"}
+{"case_id": "6", "input_shape": "[5, 16]", "has_activate": "true", "has_bias": "true", "bias_dtype": "bfloat16", "output_dtype": "27"}
+{"case_id": "7", "input_shape": "[16, 8]", "has_activate": "false", "has_bias": "true", "bias_dtype": "float32", "output_dtype": "27"}
+{"case_id": "8", "input_shape": "[2, 128]", "has_activate": "true", "has_bias": "false", "bias_dtype": "none", "output_dtype": "27"}
+{"case_id": "9", "input_shape": "[12, 12]", "has_activate": "true", "has_bias": "true", "bias_dtype": "int32", "output_dtype": "1"}
+{"case_id": "10", "input_shape": "[1, 256]", "has_activate": "false", "has_bias": "true", "bias_dtype": "float16", "output_dtype": "1"}
+{"case_id": "11", "input_shape": "[32, 4]", "has_activate": "true", "has_bias": "true", "bias_dtype": "bfloat16", "output_dtype": "1"}
+{"case_id": "12", "input_shape": "[10, 20]", "has_activate": "true", "has_bias": "true", "bias_dtype": "float32", "output_dtype": "27"}
+{"case_id": "13", "input_shape": "[6, 48]", "has_activate": "false", "has_bias": "true", "bias_dtype": "bfloat16", "output_dtype": "1"}
+{"case_id": "14", "input_shape": "[24, 6]", "has_activate": "true", "has_bias": "false", "bias_dtype": "none", "output_dtype": "1"}
+{"case_id": "15", "input_shape": "[3, 32]", "has_activate": "true", "has_bias": "true", "bias_dtype": "int32", "output_dtype": "27"}

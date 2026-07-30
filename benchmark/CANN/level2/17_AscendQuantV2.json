@@ -1,0 +1,16 @@
+{"case_id": "0", "input_shape": "[8, 32]", "scale_mode": "per_channel", "has_offset": "false", "sqrt_mode": "false", "round_mode": "round", "x_dtype": "float16"}
+{"case_id": "1", "input_shape": "[16, 64]", "scale_mode": "per_channel", "has_offset": "true", "sqrt_mode": "false", "round_mode": "floor", "x_dtype": "float16"}
+{"case_id": "2", "input_shape": "[4, 128]", "scale_mode": "per_tensor", "has_offset": "false", "sqrt_mode": "true", "round_mode": "round", "x_dtype": "float16"}
+{"case_id": "3", "input_shape": "[2, 8, 64]", "scale_mode": "per_channel", "has_offset": "false", "sqrt_mode": "false", "round_mode": "trunc", "x_dtype": "float16"}
+{"case_id": "4", "input_shape": "[4, 8, 128]", "scale_mode": "per_channel", "has_offset": "true", "sqrt_mode": "true", "round_mode": "ceil", "x_dtype": "float16"}
+{"case_id": "5", "input_shape": "[32, 128]", "scale_mode": "per_channel", "has_offset": "false", "sqrt_mode": "false", "round_mode": "round", "x_dtype": "float32"}
+{"case_id": "6", "input_shape": "[64, 256]", "scale_mode": "per_tensor", "has_offset": "true", "sqrt_mode": "false", "round_mode": "floor", "x_dtype": "float32"}
+{"case_id": "7", "input_shape": "[8, 48]", "scale_mode": "per_channel", "has_offset": "true", "sqrt_mode": "true", "round_mode": "round", "x_dtype": "float32"}
+{"case_id": "8", "input_shape": "[16, 64]", "scale_mode": "per_channel", "has_offset": "false", "sqrt_mode": "false", "round_mode": "ceil", "x_dtype": "bfloat16"}
+{"case_id": "9", "input_shape": "[8, 96]", "scale_mode": "per_tensor", "has_offset": "false", "sqrt_mode": "false", "round_mode": "trunc", "x_dtype": "bfloat16"}
+{"case_id": "10", "input_shape": "[4, 32]", "scale_mode": "per_channel", "has_offset": "true", "sqrt_mode": "true", "round_mode": "round", "x_dtype": "bfloat16"}
+{"case_id": "11", "input_shape": "[12, 128]", "scale_mode": "per_channel", "has_offset": "false", "sqrt_mode": "false", "round_mode": "round", "x_dtype": "float16"}
+{"case_id": "12", "input_shape": "[24, 64]", "scale_mode": "per_tensor", "has_offset": "false", "sqrt_mode": "true", "round_mode": "floor", "x_dtype": "float32"}
+{"case_id": "13", "input_shape": "[2, 16, 32]", "scale_mode": "per_channel", "has_offset": "false", "sqrt_mode": "false", "round_mode": "round", "x_dtype": "float32"}
+{"case_id": "14", "input_shape": "[64, 512]", "scale_mode": "per_channel", "has_offset": "true", "sqrt_mode": "false", "round_mode": "trunc", "x_dtype": "float16"}
+{"case_id": "15", "input_shape": "[8, 256]", "scale_mode": "per_channel", "has_offset": "false", "sqrt_mode": "true", "round_mode": "round", "x_dtype": "float32"}

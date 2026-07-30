@@ -1,0 +1,6 @@
+{"case_id": "0", "x_shape": "[2, 32, 4, 4]", "dtype": "float32", "num_groups": "8", "data_format": "NCHW", "dx_is_require": "1", "dgamma_is_require": "1", "dbeta_is_require": "1"}
+{"case_id": "1", "x_shape": "[4, 64, 5, 5]", "dtype": "float16", "num_groups": "16", "data_format": "NCHW", "dx_is_require": "1", "dgamma_is_require": "1", "dbeta_is_require": "1"}
+{"case_id": "2", "x_shape": "[2, 16, 20, 20]", "dtype": "float32", "num_groups": "4", "data_format": "NCHW", "dx_is_require": "1", "dgamma_is_require": "1", "dbeta_is_require": "1"}
+{"case_id": "3", "x_shape": "[1, 32, 10, 10]", "dtype": "float32", "num_groups": "8", "data_format": "NCHW", "dx_is_require": "1", "dgamma_is_require": "1", "dbeta_is_require": "1"}
+{"case_id": "4", "x_shape": "[8, 128, 7, 7]", "dtype": "float32", "num_groups": "32", "data_format": "NCHW", "dx_is_require": "1", "dgamma_is_require": "1", "dbeta_is_require": "0"}
+{"case_id": "5", "x_shape": "[2, 8, 3, 3]", "dtype": "float16", "num_groups": "2", "data_format": "NCHW", "dx_is_require": "1", "dgamma_is_require": "1", "dbeta_is_require": "1"}

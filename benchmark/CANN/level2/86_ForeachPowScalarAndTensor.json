@@ -1,0 +1,5 @@
+{"case_id": "0", "input_shape": "[[25]]", "weight_scalar": "0.5", "dtype": "float16"}
+{"case_id": "1", "input_shape": "[[32, 768, 10], [16, 256, 5]]", "weight_scalar": "0.25", "dtype": "float32"}
+{"case_id": "2", "input_shape": "[[100]]", "weight_scalar": "0.75", "dtype": "float16"}
+{"case_id": "3", "input_shape": "[[2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4]]", "weight_scalar": "1.0", "dtype": "float32"}
+{"case_id": "4", "input_shape": "[[1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 2, 2]]", "weight_scalar": "0.0", "dtype": "bfloat16"}

@@ -1,0 +1,10 @@
+{"case_id": "0", "groupCount": "2", "mList": "[125, 199]", "kList": "[1495, 441]", "nList": "[1417, 1583]", "dtype": "float16"}
+{"case_id": "1", "groupCount": "2", "mList": "[507, 349]", "kList": "[1275, 604]", "nList": "[358, 67]", "dtype": "float16"}
+{"case_id": "2", "groupCount": "1", "mList": "[279]", "kList": "[1146]", "nList": "[913]", "dtype": "float16"}
+{"case_id": "3", "groupCount": "3", "mList": "[242, 140, 167]", "kList": "[1303, 692, 1178]", "nList": "[183, 1323, 1783]", "dtype": "float16"}
+{"case_id": "4", "groupCount": "3", "mList": "[120, 46, 318]", "kList": "[1952, 1044, 557]", "nList": "[541, 592, 564]", "dtype": "float16"}
+{"case_id": "5", "groupCount": "4", "mList": "[452, 178, 243, 325]", "kList": "[1533, 1958, 1023, 194]", "nList": "[1340, 1558, 1627, 1936]", "dtype": "float16"}
+{"case_id": "6", "groupCount": "4", "mList": "[87, 450, 350, 47]", "kList": "[113, 1695, 208, 498]", "nList": "[1499, 383, 1477, 455]", "dtype": "float16"}
+{"case_id": "7", "groupCount": "4", "mList": "[77, 356, 213, 224]", "kList": "[265, 1653, 1129, 202]", "nList": "[861, 1167, 647, 1111]", "dtype": "float16"}
+{"case_id": "8", "groupCount": "3", "mList": "[265, 333, 469]", "kList": "[189, 796, 750]", "nList": "[390, 1042, 1668]", "dtype": "float16"}
+{"case_id": "9", "groupCount": "2", "mList": "[278, 345]", "kList": "[410, 1813]", "nList": "[133, 1963]", "dtype": "float16"}

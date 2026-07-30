@@ -1,0 +1,10 @@
+{"case_id": "0", "indices_shape": "[8, 13]", "indices_dtype": "int64", "values_shape": "[13, 7, 2, 3]", "values_dtype": "float16"}
+{"case_id": "1", "indices_shape": "[8, 5]", "indices_dtype": "int64", "values_shape": "[5, 7, 2]", "values_dtype": "float32"}
+{"case_id": "2", "indices_shape": "[2, 64]", "indices_dtype": "int64", "values_shape": "[64]", "values_dtype": "float16"}
+{"case_id": "3", "indices_shape": "[1, 128]", "indices_dtype": "int64", "values_shape": "[128, 10]", "values_dtype": "int32"}
+{"case_id": "4", "indices_shape": "[3, 256]", "indices_dtype": "int64", "values_shape": "[256, 128, 64]", "values_dtype": "float32"}
+{"case_id": "5", "indices_shape": "[1, 1]", "indices_dtype": "int64", "values_shape": "[1, 1]", "values_dtype": "float16"}
+{"case_id": "6", "indices_shape": "[10, 10]", "indices_dtype": "int64", "values_shape": "[10]", "values_dtype": "int32"}
+{"case_id": "7", "indices_shape": "[2, 2048]", "indices_dtype": "int64", "values_shape": "[2048, 8, 4]", "values_dtype": "float32"}
+{"case_id": "8", "indices_shape": "[12, 12]", "indices_dtype": "int64", "values_shape": "[12, 12]", "values_dtype": "float16"}
+{"case_id": "9", "indices_shape": "[1, 1000]", "indices_dtype": "int64", "values_shape": "[1000]", "values_dtype": "float32"}

@@ -1,0 +1,6 @@
+{"case_id": "0", "shape": "[128, 256]", "dtype": "float16"}
+{"case_id": "1", "shape": "[64, 1024]", "dtype": "float16"}
+{"case_id": "2", "shape": "[512, 1024]", "dtype": "float16"}
+{"case_id": "3", "shape": "[512, 128]", "dtype": "float16"}
+{"case_id": "4", "shape": "[1024, 128]", "dtype": "float16"}
+{"case_id": "5", "shape": "[256, 512]", "dtype": "float16"}

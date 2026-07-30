@@ -1,0 +1,4 @@
+{"case_id": "0", "shape1": "[4]", "shape2": "[4,4]", "dtype": "int64"}
+{"case_id": "1", "shape1": "[32]", "shape2": "[8,32]", "dtype": "int64"}
+{"case_id": "2", "shape1": "[16]", "shape2": "[128,16]", "dtype": "int64"}
+{"case_id": "3", "shape1": "[48]", "shape2": "[12,48]", "dtype": "int64"}

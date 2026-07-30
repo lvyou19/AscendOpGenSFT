@@ -1,0 +1,4 @@
+{"case_id": "0", "shape": "[2048]", "n": "2048", "alpha": "2.0", "dtype": "float32"}
+{"case_id": "1", "shape": "[128]", "n": "128", "alpha": "10", "dtype": "float32"}
+{"case_id": "2", "shape": "[16]", "n": "16", "alpha": "0.5", "dtype": "float32"}
+{"case_id": "3", "shape": "[1024]", "n": "1024", "alpha": "2.5", "dtype": "float32"}

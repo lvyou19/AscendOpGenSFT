@@ -1,0 +1,11 @@
+{"case_id": "0", "input_shape": "[2, 3]", "dtype": "float16", "repeats_type": "scalar", "repeats_val": "2", "repeats_dtype": "int32", "axis": "-1"}
+{"case_id": "1", "input_shape": "[2, 3]", "dtype": "float16", "repeats_type": "vector", "repeats_val": "0", "repeats_dtype": "int32", "axis": "1"}
+{"case_id": "2", "input_shape": "[4, 128, 64]", "dtype": "float16", "repeats_type": "scalar", "repeats_val": "4", "repeats_dtype": "int32", "axis": "1"}
+{"case_id": "3", "input_shape": "[4, 128, 64]", "dtype": "bfloat16", "repeats_type": "scalar", "repeats_val": "4", "repeats_dtype": "int32", "axis": "1"}
+{"case_id": "4", "input_shape": "[4, 128, 64]", "dtype": "float", "repeats_type": "scalar", "repeats_val": "4", "repeats_dtype": "int32", "axis": "1"}
+{"case_id": "5", "input_shape": "[8, 10]", "dtype": "float16", "repeats_type": "vector", "repeats_val": "0", "repeats_dtype": "int32", "axis": "0"}
+{"case_id": "6", "input_shape": "[16, 32]", "dtype": "bfloat16", "repeats_type": "vector", "repeats_val": "0", "repeats_dtype": "int32", "axis": "1"}
+{"case_id": "7", "input_shape": "[2, 3]", "dtype": "float16", "repeats_type": "scalar", "repeats_val": "3", "repeats_dtype": "int64", "axis": "-1"}
+{"case_id": "8", "input_shape": "[128, 64]", "dtype": "float16", "repeats_type": "vector", "repeats_val": "0", "repeats_dtype": "int64", "axis": "0"}
+{"case_id": "9", "input_shape": "[1, 5, 1]", "dtype": "float32", "repeats_type": "scalar", "repeats_val": "5", "repeats_dtype": "int32", "axis": "1"}
+{"case_id": "10", "input_shape": "[2, 2, 2]", "dtype": "float16", "repeats_type": "vector", "repeats_val": "0", "repeats_dtype": "int32", "axis": "2"}

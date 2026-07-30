@@ -1,0 +1,12 @@
+{"case_id": "0", "B": "1", "N": "1", "S": "1", "D": "64", "dtype": "float16", "cos_seq": "1"}
+{"case_id": "1", "B": "2", "N": "4", "S": "8", "D": "64", "dtype": "float16", "cos_seq": "S"}
+{"case_id": "2", "B": "1", "N": "8", "S": "16", "D": "64", "dtype": "bfloat16", "cos_seq": "1"}
+{"case_id": "3", "B": "4", "N": "2", "S": "32", "D": "64", "dtype": "bfloat16", "cos_seq": "S"}
+{"case_id": "4", "B": "32", "N": "32", "S": "1", "D": "64", "dtype": "float16", "cos_seq": "1"}
+{"case_id": "5", "B": "16", "N": "2", "S": "4", "D": "64", "dtype": "float16", "cos_seq": "1"}
+{"case_id": "6", "B": "8", "N": "4", "S": "64", "D": "64", "dtype": "float16", "cos_seq": "S"}
+{"case_id": "7", "B": "1", "N": "1", "S": "512", "D": "64", "dtype": "float16", "cos_seq": "S"}
+{"case_id": "8", "B": "2", "N": "2", "S": "128", "D": "64", "dtype": "bfloat16", "cos_seq": "S"}
+{"case_id": "9", "B": "1", "N": "16", "S": "2", "D": "64", "dtype": "float16", "cos_seq": "1"}
+{"case_id": "10", "B": "64", "N": "1", "S": "1", "D": "64", "dtype": "float16", "cos_seq": "1"}
+{"case_id": "11", "B": "3", "N": "3", "S": "7", "D": "64", "dtype": "bfloat16", "cos_seq": "S"}

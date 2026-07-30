@@ -1,0 +1,16 @@
+{"case_id": "0", "input_shape": "[8,32]", "has_smooth": "false", "x_dtype": "float16"}
+{"case_id": "1", "input_shape": "[8,32]", "has_smooth": "true", "x_dtype": "float16"}
+{"case_id": "2", "input_shape": "[16,64]", "has_smooth": "false", "x_dtype": "float16"}
+{"case_id": "3", "input_shape": "[16,64]", "has_smooth": "true", "x_dtype": "float16"}
+{"case_id": "4", "input_shape": "[2,16,31]", "has_smooth": "false", "x_dtype": "float16"}
+{"case_id": "5", "input_shape": "[2,16,32]", "has_smooth": "true", "x_dtype": "float16"}
+{"case_id": "6", "input_shape": "[4,8,128]", "has_smooth": "false", "x_dtype": "float16"}
+{"case_id": "7", "input_shape": "[4,8,128]", "has_smooth": "true", "x_dtype": "float16"}
+{"case_id": "8", "input_shape": "[1,512]", "has_smooth": "false", "x_dtype": "float16"}
+{"case_id": "9", "input_shape": "[24,512]", "has_smooth": "false", "x_dtype": "float16"}
+{"case_id": "10", "input_shape": "[24,513]", "has_smooth": "true", "x_dtype": "float16"}
+{"case_id": "11", "input_shape": "[32,128]", "has_smooth": "true", "x_dtype": "bfloat16"}
+{"case_id": "12", "input_shape": "[8,256]", "has_smooth": "false", "x_dtype": "bfloat16"}
+{"case_id": "13", "input_shape": "[2,4,64]", "has_smooth": "true", "x_dtype": "bfloat16"}
+{"case_id": "14", "input_shape": "[64,63]", "has_smooth": "false", "x_dtype": "float16"}
+{"case_id": "15", "input_shape": "[128,32]", "has_smooth": "true", "x_dtype": "float16"}

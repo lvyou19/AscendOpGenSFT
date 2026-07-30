@@ -1,0 +1,4 @@
+{"case_id": "0", "input_shape": "[4, 64, 8, 32]", "dtype": "float16", "reshuff": "false"}
+{"case_id": "1", "input_shape": "[2, 8, 64, 64]", "dtype": "float32", "reshuff": "false"}
+{"case_id": "2", "input_shape": "[1, 65536]", "dtype": "float32", "reshuff": "false"}
+{"case_id": "3", "input_shape": "[1, 65536]", "dtype": "float16", "reshuff": "false"}

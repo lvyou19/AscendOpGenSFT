@@ -1,0 +1,9 @@
+{"case_id": "0", "shape": "[4, 3]", "dtype": "float16"}
+{"case_id": "1", "shape": "[4, 1, 5]", "dtype": "float32"}
+{"case_id": "2", "shape": "[32, 64, 128]", "dtype": "float32"}
+{"case_id": "3", "shape": "[128, 512]", "dtype": "bfloat16"}
+{"case_id": "4", "shape": "[32, 64, 512]", "dtype": "float16"}
+{"case_id": "5", "shape": "[512, 2048]", "dtype": "float32"}
+{"case_id": "6", "shape": "[1024, 2048]", "dtype": "int8"}
+{"case_id": "7", "shape": "[16, 32, 512]", "dtype": "uint8"}
+{"case_id": "8", "shape": "[4, 128]", "dtype": "int32"}

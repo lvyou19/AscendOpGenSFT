@@ -1,0 +1,9 @@
+{"case_id": "0", "shape": "[64]", "dtype": "float32", "n": "", "norm": "1"}
+{"case_id": "1", "shape": "[128]", "dtype": "float32", "n": "128", "norm": "1"}
+{"case_id": "2", "shape": "[256]", "dtype": "float32", "n": "256", "norm": "2"}
+{"case_id": "3", "shape": "[32, 64]", "dtype": "float32", "n": "64", "norm": "1"}
+{"case_id": "4", "shape": "[4096]", "dtype": "float32", "n": "4096", "norm": "1"}
+{"case_id": "5", "shape": "[8192]", "dtype": "float32", "n": "8192", "norm": "1"}
+{"case_id": "6", "shape": "[16384]", "dtype": "float32", "n": "16384", "norm": "1"}
+{"case_id": "7", "shape": "[5000]", "dtype": "float32", "n": "5000", "norm": "1"}
+{"case_id": "8", "shape": "[8, 128]", "dtype": "float32", "n": "", "norm": "3"}

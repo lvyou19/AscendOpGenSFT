@@ -1,0 +1,15 @@
+{"case_id": "0", "input_shape": "[1000]", "dtype": "int32", "num_experts": "64"}
+{"case_id": "1", "input_shape": "[5000]", "dtype": "int32", "num_experts": "128"}
+{"case_id": "2", "input_shape": "[10000]", "dtype": "int32", "num_experts": "200"}
+{"case_id": "3", "input_shape": "[12000]", "dtype": "int32", "num_experts": "256"}
+{"case_id": "4", "input_shape": "[8000]", "dtype": "int32", "num_experts": "150"}
+{"case_id": "5", "input_shape": "[12001]", "dtype": "int32", "num_experts": "64"}
+{"case_id": "6", "input_shape": "[12002]", "dtype": "int32", "num_experts": "128"}
+{"case_id": "7", "input_shape": "[12003]", "dtype": "int32", "num_experts": "200"}
+{"case_id": "8", "input_shape": "[12004]", "dtype": "int32", "num_experts": "256"}
+{"case_id": "9", "input_shape": "[12005]", "dtype": "int32", "num_experts": "150"}
+{"case_id": "10", "input_shape": "[1000]", "dtype": "int32", "num_experts": "257"}
+{"case_id": "11", "input_shape": "[5000]", "dtype": "int32", "num_experts": "300"}
+{"case_id": "12", "input_shape": "[10000]", "dtype": "int32", "num_experts": "350"}
+{"case_id": "13", "input_shape": "[12000]", "dtype": "int32", "num_experts": "400"}
+{"case_id": "14", "input_shape": "[8000]", "dtype": "int32", "num_experts": "450"}

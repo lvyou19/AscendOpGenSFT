@@ -1,0 +1,2 @@
+{"case_id": "0", "shape": "[60, 1, 60]", "dtype": "float16"}
+{"case_id": "1", "shape": "[64, 1, 60]", "dtype": "float16"}

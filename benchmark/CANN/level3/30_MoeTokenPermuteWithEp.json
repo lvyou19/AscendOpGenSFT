@@ -1,0 +1,15 @@
+{"case_id": "0", "x_shape": "[3, 4]", "indices_shape": "[3, 2]", "probs_shape": "[3, 2]", "range": "[1, 5]", "num_token_out": "4", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "1", "x_shape": "[4, 8]", "indices_shape": "[4, 3]", "probs_shape": "[4, 3]", "range": "[0, 7]", "num_token_out": "7", "pad_mode": "False", "dtype": "float16"}
+{"case_id": "2", "x_shape": "[5, 16]", "indices_shape": "[5, 2]", "probs_shape": "[5, 2]", "range": "[2, 8]", "num_token_out": "6", "pad_mode": "False", "dtype": "bfloat16"}
+{"case_id": "3", "x_shape": "[2, 32]", "indices_shape": "[2, 4]", "probs_shape": "[2, 4]", "range": "[1, 3]", "num_token_out": "2", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "4", "x_shape": "[6, 64]", "indices_shape": "[6, 2]", "probs_shape": "[6, 2]", "range": "[0, 9]", "num_token_out": "9", "pad_mode": "False", "dtype": "float16"}
+{"case_id": "5", "x_shape": "[3, 4]", "indices_shape": "[3, 2]", "probs_shape": "[3, 2]", "range": "[0, 4]", "num_token_out": "4", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "6", "x_shape": "[2, 32]", "indices_shape": "[2, 4]", "probs_shape": "[2, 4]", "range": "[2, 4]", "num_token_out": "2", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "7", "x_shape": "[2, 32]", "indices_shape": "[2, 4]", "probs_shape": "[2, 4]", "range": "[3, 5]", "num_token_out": "2", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "8", "x_shape": "[3, 4]", "indices_shape": "[3, 1]", "probs_shape": "[3, 1]", "range": "[0, 2]", "num_token_out": "2", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "9", "x_shape": "[2, 4]", "indices_shape": "[2, 2]", "probs_shape": "[2, 2]", "range": "[0, 4]", "num_token_out": "4", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "10", "x_shape": "[4, 4]", "indices_shape": "[4, 2]", "probs_shape": "[4, 2]", "range": "[0, 8]", "num_token_out": "8", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "11", "x_shape": "[8, 4]", "indices_shape": "[8, 2]", "probs_shape": "[8, 2]", "range": "[0, 16]", "num_token_out": "16", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "12", "x_shape": "[3, 1024]", "indices_shape": "[3, 2]", "probs_shape": "[3, 2]", "range": "[0, 6]", "num_token_out": "6", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "13", "x_shape": "[2, 2048]", "indices_shape": "[2, 2]", "probs_shape": "[2, 2]", "range": "[0, 4]", "num_token_out": "4", "pad_mode": "False", "dtype": "float32"}
+{"case_id": "14", "x_shape": "[3, 4]", "indices_shape": "[3, 2]", "probs_shape": "[3, 2]", "range": "[1, 3]", "num_token_out": "2", "pad_mode": "False", "dtype": "float32"}

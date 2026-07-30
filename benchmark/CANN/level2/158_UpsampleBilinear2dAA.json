@@ -1,0 +1,14 @@
+{"case_id": "0", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "16", "out_w": "16", "align_corners": "False"}
+{"case_id": "1", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "16", "out_w": "16", "align_corners": "True"}
+{"case_id": "2", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "16", "in_w": "16", "out_h": "8", "out_w": "8", "align_corners": "False"}
+{"case_id": "3", "dtype": "float32", "batch": "2", "channels": "3", "in_h": "32", "in_w": "32", "out_h": "64", "out_w": "64", "align_corners": "False"}
+{"case_id": "4", "dtype": "float32", "batch": "2", "channels": "3", "in_h": "32", "in_w": "32", "out_h": "64", "out_w": "64", "align_corners": "True"}
+{"case_id": "5", "dtype": "float32", "batch": "1", "channels": "1", "in_h": "4", "in_w": "4", "out_h": "8", "out_w": "8", "align_corners": "False"}
+{"case_id": "6", "dtype": "float16", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "16", "out_w": "16", "align_corners": "False"}
+{"case_id": "7", "dtype": "float16", "batch": "2", "channels": "3", "in_h": "16", "in_w": "16", "out_h": "32", "out_w": "32", "align_corners": "False"}
+{"case_id": "8", "dtype": "float16", "batch": "1", "channels": "1", "in_h": "32", "in_w": "32", "out_h": "64", "out_w": "64", "align_corners": "False"}
+{"case_id": "9", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "4", "in_w": "4", "out_h": "4", "out_w": "4", "align_corners": "False"}
+{"case_id": "10", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "4", "out_w": "16", "align_corners": "False"}
+{"case_id": "11", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "8", "in_w": "16", "out_h": "16", "out_w": "32", "align_corners": "False"}
+{"case_id": "12", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "24", "out_w": "24", "align_corners": "False"}
+{"case_id": "13", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "24", "out_w": "24", "align_corners": "True"}

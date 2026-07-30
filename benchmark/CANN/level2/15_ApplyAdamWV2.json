@@ -1,0 +1,20 @@
+{"case_id": "0", "shape": "[4, 16]", "dtype": "bfloat16", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "5e-3", "eps": "1e-6", "amsgrad": "False", "maximize": "False", "step": "1"}
+{"case_id": "1", "shape": "[8, 16]", "dtype": "float16", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "5e-3", "eps": "1e-6", "amsgrad": "True", "maximize": "False", "step": "1"}
+{"case_id": "2", "shape": "[2, 4, 8]", "dtype": "float16", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "5e-3", "eps": "1e-6", "amsgrad": "False", "maximize": "True", "step": "1"}
+{"case_id": "3", "shape": "[4, 32]", "dtype": "float16", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "5e-3", "eps": "1e-6", "amsgrad": "True", "maximize": "True", "step": "1"}
+{"case_id": "4", "shape": "[8, 8]", "dtype": "float16", "lr": "0.001", "beta1": "0.9", "beta2": "0.999", "weight_decay": "1e-4", "eps": "1e-8", "amsgrad": "False", "maximize": "False", "step": "10"}
+{"case_id": "5", "shape": "[3, 16]", "dtype": "float16", "lr": "0.001", "beta1": "0.9", "beta2": "0.999", "weight_decay": "1e-4", "eps": "1e-8", "amsgrad": "True", "maximize": "False", "step": "10"}
+{"case_id": "6", "shape": "[16]", "dtype": "float16", "lr": "0.01", "beta1": "0.85", "beta2": "0.95", "weight_decay": "1e-3", "eps": "1e-7", "amsgrad": "False", "maximize": "False", "step": "50"}
+{"case_id": "7", "shape": "[2, 8, 8]", "dtype": "float16", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "5e-3", "eps": "1e-6", "amsgrad": "False", "maximize": "False", "step": "20"}
+{"case_id": "8", "shape": "[4, 16]", "dtype": "float16", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "5e-3", "eps": "1e-6", "amsgrad": "False", "maximize": "False", "step": "1"}
+{"case_id": "9", "shape": "[8, 16]", "dtype": "bfloat16", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "5e-3", "eps": "1e-6", "amsgrad": "True", "maximize": "False", "step": "1"}
+{"case_id": "10", "shape": "[2, 4, 8]", "dtype": "bfloat16", "lr": "0.001", "beta1": "0.9", "beta2": "0.999", "weight_decay": "1e-4", "eps": "1e-8", "amsgrad": "False", "maximize": "False", "step": "10"}
+{"case_id": "11", "shape": "[4, 32]", "dtype": "bfloat16", "lr": "0.01", "beta1": "0.85", "beta2": "0.95", "weight_decay": "1e-3", "eps": "1e-7", "amsgrad": "False", "maximize": "False", "step": "50"}
+{"case_id": "12", "shape": "[8, 8]", "dtype": "float", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "5e-3", "eps": "1e-6", "amsgrad": "False", "maximize": "False", "step": "1"}
+{"case_id": "13", "shape": "[2, 4, 8]", "dtype": "float", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "5e-3", "eps": "1e-6", "amsgrad": "True", "maximize": "False", "step": "1"}
+{"case_id": "14", "shape": "[16]", "dtype": "float", "lr": "0.001", "beta1": "0.9", "beta2": "0.999", "weight_decay": "1e-4", "eps": "1e-8", "amsgrad": "False", "maximize": "False", "step": "10"}
+{"case_id": "15", "shape": "[3, 16]", "dtype": "float", "lr": "0.01", "beta1": "0.85", "beta2": "0.95", "weight_decay": "1e-3", "eps": "1e-7", "amsgrad": "False", "maximize": "False", "step": "50"}
+{"case_id": "16", "shape": "[4, 16]", "dtype": "float", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "0.0", "eps": "1e-6", "amsgrad": "False", "maximize": "False", "step": "1"}
+{"case_id": "17", "shape": "[8, 16]", "dtype": "float", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "0.0", "eps": "1e-6", "amsgrad": "True", "maximize": "False", "step": "1"}
+{"case_id": "18", "shape": "[8, 8]", "dtype": "float16", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "0.0", "eps": "1e-6", "amsgrad": "False", "maximize": "False", "step": "1"}
+{"case_id": "19", "shape": "[4, 32]", "dtype": "bfloat16", "lr": "0.01", "beta1": "0.9", "beta2": "0.99", "weight_decay": "0.0", "eps": "1e-6", "amsgrad": "False", "maximize": "False", "step": "1"}

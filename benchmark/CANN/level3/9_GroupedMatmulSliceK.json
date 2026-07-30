@@ -1,0 +1,8 @@
+{"case_id": "0", "m": "128", "k": "1280", "n": "640", "groupCount": "8", "dtype": "float16"}
+{"case_id": "1", "m": "640", "k": "512", "n": "210", "groupCount": "32", "dtype": "float16"}
+{"case_id": "2", "m": "256", "k": "128", "n": "1024", "groupCount": "12", "dtype": "float16"}
+{"case_id": "3", "m": "1024", "k": "864", "n": "128", "groupCount": "24", "dtype": "float16"}
+{"case_id": "4", "m": "327", "k": "1152", "n": "554", "groupCount": "2", "dtype": "float16"}
+{"case_id": "5", "m": "1152", "k": "512", "n": "1433", "groupCount": "64", "dtype": "float16"}
+{"case_id": "6", "m": "640", "k": "256", "n": "619", "groupCount": "32", "dtype": "float16"}
+{"case_id": "7", "m": "512", "k": "512", "n": "512", "groupCount": "4", "dtype": "float16"}

@@ -1,0 +1,6 @@
+{"case_id": "0", "x1_shape": "[32, 32, 1]", "x2_shape": "[32, 1, 64]", "dtype": "bfloat16", "n": "2"}
+{"case_id": "1", "x1_shape": "[16, 256, 1]", "x2_shape": "[16, 1, 16]", "dtype": "bfloat16", "n": "3"}
+{"case_id": "2", "x1_shape": "[32, 128, 1]", "x2_shape": "[32, 1, 64]", "dtype": "float32", "n": "4"}
+{"case_id": "3", "x1_shape": "[64, 128, 1]", "x2_shape": "[64, 1, 32]", "dtype": "float32", "n": "5"}
+{"case_id": "4", "x1_shape": "[1024, 256, 1]", "x2_shape": "[1024, 1, 256]", "dtype": "float16", "n": "6"}
+{"case_id": "5", "x1_shape": "[128, 512, 1]", "x2_shape": "[128, 1, 128]", "dtype": "float16", "n": "7"}

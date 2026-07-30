@@ -1,0 +1,10 @@
+{"case_id": "0", "x_shape": "[4,64]", "x_dtype": "float32", "scale_shape": "[4]", "quant_min": "0", "quant_max": "255", "axis": "0"}
+{"case_id": "1", "x_shape": "[4,32,32]", "x_dtype": "float32", "scale_shape": "[4]", "quant_min": "-128", "quant_max": "127", "axis": "0"}
+{"case_id": "2", "x_shape": "[16,8]", "x_dtype": "float32", "scale_shape": "[16]", "quant_min": "-8", "quant_max": "7", "axis": "0"}
+{"case_id": "3", "x_shape": "[2,128]", "x_dtype": "float32", "scale_shape": "[2]", "quant_min": "0", "quant_max": "15", "axis": "0"}
+{"case_id": "4", "x_shape": "[32,4]", "x_dtype": "float32", "scale_shape": "[32]", "quant_min": "0", "quant_max": "127", "axis": "0"}
+{"case_id": "5", "x_shape": "[4,64]", "x_dtype": "float16", "scale_shape": "[4]", "quant_min": "0", "quant_max": "255", "axis": "0"}
+{"case_id": "6", "x_shape": "[8,32,16]", "x_dtype": "float16", "scale_shape": "[8]", "quant_min": "-128", "quant_max": "127", "axis": "0"}
+{"case_id": "7", "x_shape": "[16,8]", "x_dtype": "float16", "scale_shape": "[16]", "quant_min": "-8", "quant_max": "7", "axis": "0"}
+{"case_id": "8", "x_shape": "[2,128]", "x_dtype": "float16", "scale_shape": "[2]", "quant_min": "0", "quant_max": "15", "axis": "0"}
+{"case_id": "9", "x_shape": "[32,4]", "x_dtype": "float16", "scale_shape": "[32]", "quant_min": "0", "quant_max": "127", "axis": "0"}

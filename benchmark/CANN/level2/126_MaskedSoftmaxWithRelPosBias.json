@@ -1,0 +1,9 @@
+{"case_id": "0", "x_shape": "[32, 2, 4, 8, 16]", "bias_shape": "[1, 1, 4, 8, 16]", "dtype": "float16", "scale_value": "1.0", "has_attn": "0"}
+{"case_id": "1", "x_shape": "[24, 2, 4, 8, 16]", "bias_shape": "[1, 1, 4, 8, 16]", "dtype": "float32", "scale_value": "1.0", "has_attn": "0"}
+{"case_id": "2", "x_shape": "[32, 2, 4, 8, 16]", "bias_shape": "[1, 1, 4, 8, 16]", "dtype": "float16", "scale_value": "1.0", "has_attn": "0"}
+{"case_id": "3", "x_shape": "[8, 4, 4, 8, 16]", "bias_shape": "[1, 1, 4, 8, 16]", "dtype": "float16", "scale_value": "1.0", "has_attn": "0"}
+{"case_id": "4", "x_shape": "[16, 2, 2, 4, 8]", "bias_shape": "[1, 1, 2, 4, 8]", "dtype": "float16", "scale_value": "0.5", "has_attn": "1"}
+{"case_id": "5", "x_shape": "[32, 2, 4, 8, 16]", "bias_shape": "[1, 1, 4, 8, 16]", "dtype": "float16", "scale_value": "1.0", "has_attn": "0"}
+{"case_id": "6", "x_shape": "[16, 4, 8, 8, 16]", "bias_shape": "[1, 1, 8, 8, 16]", "dtype": "float16", "scale_value": "1.0", "has_attn": "0"}
+{"case_id": "7", "x_shape": "[32, 2, 4, 8, 1]", "bias_shape": "[1, 1, 4, 8, 1]", "dtype": "float16", "scale_value": "1.0", "has_attn": "0"}
+{"case_id": "8", "x_shape": "[32, 8, 8, 64]", "bias_shape": "[1, 8, 8, 64]", "dtype": "bfloat16", "scale_value": "1.0", "has_attn": "0"}

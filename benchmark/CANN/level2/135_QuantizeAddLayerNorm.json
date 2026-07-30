@@ -1,0 +1,5 @@
+{"case_id": "0", "input_shape": "[2, 256]", "normalized_shape": "[256]", "dtype": "bfloat16", "epsilon": "1e-5", "axis": "-1", "additional_output": "True", "scale_mode": "per_channel"}
+{"case_id": "1", "input_shape": "[4, 128]", "normalized_shape": "[128]", "dtype": "bfloat16", "epsilon": "1e-5", "axis": "-1", "additional_output": "True", "scale_mode": "per_channel"}
+{"case_id": "2", "input_shape": "[8, 512]", "normalized_shape": "[512]", "dtype": "float16", "epsilon": "1e-5", "axis": "-1", "additional_output": "True", "scale_mode": "per_tensor"}
+{"case_id": "3", "input_shape": "[1, 256]", "normalized_shape": "[256]", "dtype": "float16", "epsilon": "1e-5", "axis": "-1", "additional_output": "True", "scale_mode": "per_tensor"}
+{"case_id": "4", "input_shape": "[8, 256]", "normalized_shape": "[256]", "dtype": "float16", "epsilon": "1e-5", "axis": "-1", "additional_output": "True", "scale_mode": "per_tensor"}

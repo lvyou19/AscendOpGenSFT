@@ -1,0 +1,5 @@
+{"case_id": "0", "B": "1", "C": "16", "N": "16", "M": "8", "grad_dtype": "float32", "idx_dtype": "int32"}
+{"case_id": "1", "B": "2", "C": "32", "N": "32", "M": "16", "grad_dtype": "float32", "idx_dtype": "int64"}
+{"case_id": "2", "B": "1", "C": "16", "N": "64", "M": "32", "grad_dtype": "float16", "idx_dtype": "int32"}
+{"case_id": "3", "B": "2", "C": "16", "N": "32", "M": "64", "grad_dtype": "float16", "idx_dtype": "int64"}
+{"case_id": "4", "B": "4", "C": "32", "N": "128", "M": "16", "grad_dtype": "float32", "idx_dtype": "int32"}

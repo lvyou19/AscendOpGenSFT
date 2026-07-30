@@ -1,0 +1,6 @@
+{"case_id": "0", "input_shape": "[128, 64]", "dtype": "float16", "num_updates": "64"}
+{"case_id": "1", "input_shape": "[1024, 32]", "dtype": "float", "num_updates": "128"}
+{"case_id": "2", "input_shape": "[32, 16]", "dtype": "int32", "num_updates": "16"}
+{"case_id": "3", "input_shape": "[256, 128]", "dtype": "float16", "num_updates": "128"}
+{"case_id": "4", "input_shape": "[128, 64]", "dtype": "float", "num_updates": "32"}
+{"case_id": "5", "input_shape": "[64, 32]", "dtype": "int32", "num_updates": "32"}

@@ -1,0 +1,11 @@
+{"case_id": "0", "var_shape": "[2,3,1,32]", "indices_rank": "1", "indices_dtype": "int32", "updates_dtype": "float16", "has_smooth": "false", "reduce": "update", "axis": "-2"}
+{"case_id": "1", "var_shape": "[2,3,1,32]", "indices_rank": "1", "indices_dtype": "int32", "updates_dtype": "float16", "has_smooth": "true", "reduce": "update", "axis": "-2"}
+{"case_id": "2", "var_shape": "[1,8,1,32]", "indices_rank": "1", "indices_dtype": "int64", "updates_dtype": "bfloat16", "has_smooth": "false", "reduce": "none", "axis": "-2"}
+{"case_id": "3", "var_shape": "[4,2,1,64]", "indices_rank": "1", "indices_dtype": "int32", "updates_dtype": "float16", "has_smooth": "false", "reduce": "update", "axis": "-2"}
+{"case_id": "4", "var_shape": "[2,3,1,32]", "indices_rank": "2", "indices_dtype": "int32", "updates_dtype": "float16", "has_smooth": "false", "reduce": "update", "axis": "-2"}
+{"case_id": "5", "var_shape": "[2,5,1,128]", "indices_rank": "1", "indices_dtype": "int32", "updates_dtype": "float16", "has_smooth": "false", "reduce": "update", "axis": "-2"}
+{"case_id": "6", "var_shape": "[6,2,1,32]", "indices_rank": "1", "indices_dtype": "int32", "updates_dtype": "bfloat16", "has_smooth": "true", "reduce": "update", "axis": "-2"}
+{"case_id": "7", "var_shape": "[1,1,1,32]", "indices_rank": "1", "indices_dtype": "int32", "updates_dtype": "float16", "has_smooth": "false", "reduce": "update", "axis": "-2"}
+{"case_id": "8", "var_shape": "[2,16,1,32]", "indices_rank": "1", "indices_dtype": "int32", "updates_dtype": "float16", "has_smooth": "false", "reduce": "update", "axis": "-2"}
+{"case_id": "9", "var_shape": "[2,16,1,64]", "indices_rank": "1", "indices_dtype": "int32", "updates_dtype": "float16", "has_smooth": "true", "reduce": "update", "axis": "-2"}
+{"case_id": "10", "var_shape": "[2,4,2,32]", "indices_rank": "2", "indices_dtype": "int32", "updates_dtype": "float16", "has_smooth": "false", "reduce": "update", "axis": "-2"}

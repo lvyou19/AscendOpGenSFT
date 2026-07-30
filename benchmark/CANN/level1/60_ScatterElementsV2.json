@@ -1,0 +1,12 @@
+{"case_id": "0", "shape": "[32,64]", "axis": "-1", "dtype": "float32", "reduction": "none", "idx_size": "16"}
+{"case_id": "1", "shape": "[64,128]", "axis": "-1", "dtype": "float32", "reduction": "none", "idx_size": "32"}
+{"case_id": "2", "shape": "[32,64]", "axis": "-1", "dtype": "float16", "reduction": "none", "idx_size": "16"}
+{"case_id": "3", "shape": "[128,256]", "axis": "-1", "dtype": "float16", "reduction": "none", "idx_size": "64"}
+{"case_id": "4", "shape": "[32,64]", "axis": "-1", "dtype": "float32", "reduction": "add", "idx_size": "16"}
+{"case_id": "5", "shape": "[64,128]", "axis": "-1", "dtype": "float16", "reduction": "add", "idx_size": "32"}
+{"case_id": "6", "shape": "[32,64]", "axis": "-1", "dtype": "int32", "reduction": "none", "idx_size": "16"}
+{"case_id": "7", "shape": "[64,128]", "axis": "-1", "dtype": "bfloat16", "reduction": "none", "idx_size": "32"}
+{"case_id": "8", "shape": "[32,64]", "axis": "0", "dtype": "float32", "reduction": "none", "idx_size": "16"}
+{"case_id": "9", "shape": "[64,128]", "axis": "0", "dtype": "float16", "reduction": "none", "idx_size": "32"}
+{"case_id": "10", "shape": "[32,64,128]", "axis": "1", "dtype": "float32", "reduction": "none", "idx_size": "16"}
+{"case_id": "11", "shape": "[32,64]", "axis": "-1", "dtype": "bool", "reduction": "none", "idx_size": "16"}

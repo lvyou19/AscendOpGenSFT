@@ -1,0 +1,14 @@
+{"case_id": "0", "x_shape": "[4174,4127]", "row_idx_shape": "[4174,1]", "expert_idx_shape": "[4174,1]", "active_num": "172", "scale": "0.6", "offset": "0.6", "dtype": "float32"}
+{"case_id": "1", "x_shape": "[4415,4135]", "row_idx_shape": "[4415,1]", "expert_idx_shape": "[4415,1]", "active_num": "29", "scale": "0.6", "offset": "0.6", "dtype": "float16"}
+{"case_id": "2", "x_shape": "[4237,4406]", "row_idx_shape": "[4237,1]", "expert_idx_shape": "[4237,1]", "active_num": "180", "scale": "0.6", "offset": "0.6", "dtype": "float16"}
+{"case_id": "3", "x_shape": "[4384,4310]", "row_idx_shape": "[4384,1]", "expert_idx_shape": "[4384,1]", "active_num": "122", "scale": "0.6", "offset": "0.6", "dtype": "float32"}
+{"case_id": "4", "x_shape": "[4489,4426]", "row_idx_shape": "[4489,1]", "expert_idx_shape": "[4489,1]", "active_num": "57", "scale": "0.6", "offset": "0.6", "dtype": "bfloat16"}
+{"case_id": "5", "x_shape": "[32,128]", "row_idx_shape": "[32,1]", "expert_idx_shape": "[32,1]", "active_num": "32", "scale": "0.7", "offset": "0.7", "dtype": "bfloat16"}
+{"case_id": "6", "x_shape": "[64,64]", "row_idx_shape": "[64,1]", "expert_idx_shape": "[64,1]", "active_num": "64", "scale": "0.8", "offset": "0.8", "dtype": "float16"}
+{"case_id": "7", "x_shape": "[128,32]", "row_idx_shape": "[128,1]", "expert_idx_shape": "[128,1]", "active_num": "128", "scale": "0.9", "offset": "0.9", "dtype": "float32"}
+{"case_id": "8", "x_shape": "[2048,64]", "row_idx_shape": "[2048,1]", "expert_idx_shape": "[2048,1]", "active_num": "2048", "scale": "0.8", "offset": "0.8", "dtype": "float16"}
+{"case_id": "9", "x_shape": "[4096,32]", "row_idx_shape": "[4096,1]", "expert_idx_shape": "[4096,1]", "active_num": "4096", "scale": "0.9", "offset": "0.9", "dtype": "float32"}
+{"case_id": "10", "x_shape": "[256,64]", "row_idx_shape": "[256,1]", "expert_idx_shape": "[256,1]", "active_num": "64", "scale": "0.8", "offset": "0.8", "dtype": "float16"}
+{"case_id": "11", "x_shape": "[512,32]", "row_idx_shape": "[512,1]", "expert_idx_shape": "[512,1]", "active_num": "128", "scale": "0.9", "offset": "0.9", "dtype": "float32"}
+{"case_id": "12", "x_shape": "[4096,64]", "row_idx_shape": "[4096,1]", "expert_idx_shape": "[4096,1]", "active_num": "1024", "scale": "0.8", "offset": "0.8", "dtype": "float16"}
+{"case_id": "13", "x_shape": "[8192,32]", "row_idx_shape": "[8192,1]", "expert_idx_shape": "[8192,1]", "active_num": "2048", "scale": "0.9", "offset": "0.9", "dtype": "float32"}

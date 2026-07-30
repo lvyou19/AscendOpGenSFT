@@ -1,0 +1,10 @@
+{"case_id": "0", "input_shape": "[48, 128, 256]", "normalized_shape": "[256]", "dtype": "float16", "bias_type": "present", "epsilon": "1e-5", "additional_out": "false"}
+{"case_id": "1", "input_shape": "[256, 1024]", "normalized_shape": "[1024]", "dtype": "float16", "bias_type": "present", "epsilon": "1e-5", "additional_out": "true"}
+{"case_id": "2", "input_shape": "[64, 7168]", "normalized_shape": "[7168]", "dtype": "bfloat16", "bias_type": "None", "epsilon": "1e-5", "additional_out": "false"}
+{"case_id": "3", "input_shape": "[512, 128]", "normalized_shape": "[128]", "dtype": "bfloat16", "bias_type": "None", "epsilon": "1e-5", "additional_out": "true"}
+{"case_id": "4", "input_shape": "[24, 128, 1024]", "normalized_shape": "[1024]", "dtype": "float32", "bias_type": "broadcast", "epsilon": "1e-5", "additional_out": "true"}
+{"case_id": "5", "input_shape": "[48, 512, 128]", "normalized_shape": "[128]", "dtype": "float32", "bias_type": "None", "epsilon": "1e-5", "additional_out": "false"}
+{"case_id": "6", "input_shape": "[4096, 2048]", "normalized_shape": "[2048]", "dtype": "float16", "bias_type": "broadcast", "epsilon": "1e-5", "additional_out": "true"}
+{"case_id": "7", "input_shape": "[64, 1024, 512]", "normalized_shape": "[512]", "dtype": "float32", "bias_type": "present", "epsilon": "1e-5", "additional_out": "false"}
+{"case_id": "8", "input_shape": "[32, 64, 128]", "normalized_shape": "[128]", "dtype": "float16", "bias_type": "broadcast", "epsilon": "1e-5", "additional_out": "true"}
+{"case_id": "9", "input_shape": "[48, 64, 64]", "normalized_shape": "[64]", "dtype": "float16", "bias_type": "present", "epsilon": "1e-5", "additional_out": "false"}

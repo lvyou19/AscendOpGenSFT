@@ -1,0 +1,12 @@
+{"case_id": "0", "x_shape": "[1, 32, 10, 10]", "gamma_shape": "[32]", "beta_shape": "[32]", "dtype": "float32", "num_groups": "8", "eps": "1e-5", "activate_swish": "True", "swish_scale": "1.0"}
+{"case_id": "1", "x_shape": "[4, 64, 5, 5]", "gamma_shape": "[64]", "beta_shape": "[64]", "dtype": "float16", "num_groups": "16", "eps": "1e-5", "activate_swish": "True", "swish_scale": "1.0"}
+{"case_id": "2", "x_shape": "[2, 16, 20, 20]", "gamma_shape": "[16]", "beta_shape": "[16]", "dtype": "bfloat16", "num_groups": "4", "eps": "1e-5", "activate_swish": "False", "swish_scale": "1.0"}
+{"case_id": "3", "x_shape": "[8, 128, 7, 7]", "gamma_shape": "[128]", "beta_shape": "[128]", "dtype": "float32", "num_groups": "32", "eps": "1e-5", "activate_swish": "True", "swish_scale": "0.5"}
+{"case_id": "4", "x_shape": "[16, 32, 2, 2]", "gamma_shape": "[32]", "beta_shape": "[32]", "dtype": "float16", "num_groups": "8", "eps": "1e-5", "activate_swish": "False", "swish_scale": "1.0"}
+{"case_id": "5", "x_shape": "[100, 32]", "gamma_shape": "[32]", "beta_shape": "[32]", "dtype": "float16", "num_groups": "8", "eps": "1e-5", "activate_swish": "True", "swish_scale": "1.0"}
+{"case_id": "6", "x_shape": "[64, 256, 1, 1]", "gamma_shape": "[256]", "beta_shape": "[256]", "dtype": "float32", "num_groups": "64", "eps": "1e-5", "activate_swish": "True", "swish_scale": "1.0"}
+{"case_id": "7", "x_shape": "[32, 48, 8, 8]", "gamma_shape": "[48]", "beta_shape": "[48]", "dtype": "float16", "num_groups": "12", "eps": "1e-5", "activate_swish": "False", "swish_scale": "1.0"}
+{"case_id": "8", "x_shape": "[1, 1, 1, 1]", "gamma_shape": "[1]", "beta_shape": "[1]", "dtype": "float32", "num_groups": "1", "eps": "1e-5", "activate_swish": "True", "swish_scale": "1.0"}
+{"case_id": "9", "x_shape": "[10, 20]", "gamma_shape": "[20]", "beta_shape": "[20]", "dtype": "bfloat16", "num_groups": "5", "eps": "1e-5", "activate_swish": "True", "swish_scale": "1.0"}
+{"case_id": "10", "x_shape": "[5, 12]", "gamma_shape": "[12]", "beta_shape": "[12]", "dtype": "float32", "num_groups": "3", "eps": "1e-5", "activate_swish": "False", "swish_scale": "1.0"}
+{"case_id": "11", "x_shape": "[200, 128]", "gamma_shape": "[128]", "beta_shape": "[128]", "dtype": "float16", "num_groups": "32", "eps": "1e-5", "activate_swish": "True", "swish_scale": "2.0"}

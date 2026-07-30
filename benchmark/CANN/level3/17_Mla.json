@@ -1,0 +1,6 @@
+{"case_id": "0", "batch": "2", "q_seqlen": "1", "kv_seqlen": "2", "num_heads": "128", "kv_heads": "1", "head_size": "512", "head_size_rope": "64", "num_blocks": "16", "block_size": "128", "dtype": "float16"}
+{"case_id": "1", "batch": "2", "q_seqlen": "2", "kv_seqlen": "64", "num_heads": "16", "kv_heads": "1", "head_size": "512", "head_size_rope": "64", "num_blocks": "48", "block_size": "128", "dtype": "bfloat16"}
+{"case_id": "2", "batch": "1", "q_seqlen": "4", "kv_seqlen": "24", "num_heads": "8", "kv_heads": "1", "head_size": "512", "head_size_rope": "64", "num_blocks": "16", "block_size": "128", "dtype": "float16"}
+{"case_id": "3", "batch": "4", "q_seqlen": "1", "kv_seqlen": "16", "num_heads": "128", "kv_heads": "1", "head_size": "512", "head_size_rope": "64", "num_blocks": "32", "block_size": "128", "dtype": "bfloat16"}
+{"case_id": "4", "batch": "8", "q_seqlen": "1", "kv_seqlen": "32", "num_heads": "1", "kv_heads": "1", "head_size": "512", "head_size_rope": "64", "num_blocks": "16", "block_size": "128", "dtype": "float16"}
+{"case_id": "5", "batch": "1", "q_seqlen": "2", "kv_seqlen": "128", "num_heads": "32", "kv_heads": "1", "head_size": "512", "head_size_rope": "64", "num_blocks": "16", "block_size": "128", "dtype": "float16"}

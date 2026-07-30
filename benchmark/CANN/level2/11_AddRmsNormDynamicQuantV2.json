@@ -1,0 +1,6 @@
+{"case_id": "0", "input_shape": "[2, 4]", "normalized_shape": "[4]", "dtype": "float16", "epsilon": "1e-6"}
+{"case_id": "1", "input_shape": "[8, 64]", "normalized_shape": "[64]", "dtype": "float16", "epsilon": "1e-6"}
+{"case_id": "2", "input_shape": "[4, 128]", "normalized_shape": "[128]", "dtype": "float16", "epsilon": "1e-5"}
+{"case_id": "3", "input_shape": "[1, 512]", "normalized_shape": "[512]", "dtype": "float16", "epsilon": "1e-6"}
+{"case_id": "4", "input_shape": "[2, 4096]", "normalized_shape": "[4096]", "dtype": "float16", "epsilon": "1e-6"}
+{"case_id": "5", "input_shape": "[1, 16384]", "normalized_shape": "[16384]", "dtype": "float16", "epsilon": "1e-6"}

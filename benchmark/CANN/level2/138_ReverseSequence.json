@@ -1,0 +1,15 @@
+{"case_id": "0", "input_shape": "[48, 1024, 1024]", "dtype": "float32", "seq_dim": "1", "batch_dim": "0"}
+{"case_id": "1", "input_shape": "[48, 256, 512]", "dtype": "float16", "seq_dim": "1", "batch_dim": "0"}
+{"case_id": "2", "input_shape": "[1, 512, 1024]", "dtype": "float32", "seq_dim": "1", "batch_dim": "0"}
+{"case_id": "3", "input_shape": "[16, 2048, 1024]", "dtype": "float32", "seq_dim": "1", "batch_dim": "0"}
+{"case_id": "4", "input_shape": "[32, 512, 256, 32]", "dtype": "float16", "seq_dim": "2", "batch_dim": "0"}
+{"case_id": "5", "input_shape": "[1024, 64, 128]", "dtype": "float32", "seq_dim": "0", "batch_dim": "1"}
+{"case_id": "6", "input_shape": "[512, 128, 64]", "dtype": "int64", "seq_dim": "1", "batch_dim": "0"}
+{"case_id": "7", "input_shape": "[16, 8, 4, 16]", "dtype": "float32", "seq_dim": "2", "batch_dim": "0"}
+{"case_id": "8", "input_shape": "[1, 128, 64, 32, 16]", "dtype": "float16", "seq_dim": "3", "batch_dim": "0"}
+{"case_id": "9", "input_shape": "[2, 2, 16]", "dtype": "float32", "seq_dim": "0", "batch_dim": "1"}
+{"case_id": "10", "input_shape": "[100, 200, 300]", "dtype": "float32", "seq_dim": "0", "batch_dim": "1"}
+{"case_id": "11", "input_shape": "[2, 4, 8, 16, 64]", "dtype": "float16", "seq_dim": "3", "batch_dim": "1"}
+{"case_id": "12", "input_shape": "[1, 1, 100, 12]", "dtype": "float32", "seq_dim": "2", "batch_dim": "0"}
+{"case_id": "13", "input_shape": "[64, 16, 32]", "dtype": "int32", "seq_dim": "1", "batch_dim": "0"}
+{"case_id": "14", "input_shape": "[8, 8, 8, 8]", "dtype": "float32", "seq_dim": "2", "batch_dim": "1"}

@@ -1,0 +1,16 @@
+{"case_id": "0", "dtype": "float32", "batch": "2", "channels": "8", "m": "16", "nsample": "4"}
+{"case_id": "1", "dtype": "float32", "batch": "3", "channels": "8", "m": "24", "nsample": "3"}
+{"case_id": "2", "dtype": "float32", "batch": "2", "channels": "16", "m": "20", "nsample": "5"}
+{"case_id": "3", "dtype": "float32", "batch": "4", "channels": "8", "m": "32", "nsample": "2"}
+{"case_id": "4", "dtype": "float32", "batch": "2", "channels": "8", "m": "12", "nsample": "6"}
+{"case_id": "5", "dtype": "float32", "batch": "3", "channels": "4", "m": "18", "nsample": "4"}
+{"case_id": "6", "dtype": "float32", "batch": "2", "channels": "8", "m": "8", "nsample": "8"}
+{"case_id": "7", "dtype": "float32", "batch": "5", "channels": "8", "m": "40", "nsample": "3"}
+{"case_id": "8", "dtype": "float16", "batch": "2", "channels": "8", "m": "16", "nsample": "4"}
+{"case_id": "9", "dtype": "float16", "batch": "3", "channels": "8", "m": "21", "nsample": "3"}
+{"case_id": "10", "dtype": "float16", "batch": "2", "channels": "8", "m": "14", "nsample": "5"}
+{"case_id": "11", "dtype": "float16", "batch": "4", "channels": "8", "m": "28", "nsample": "2"}
+{"case_id": "12", "dtype": "float16", "batch": "2", "channels": "16", "m": "16", "nsample": "4"}
+{"case_id": "13", "dtype": "float16", "batch": "3", "channels": "4", "m": "15", "nsample": "6"}
+{"case_id": "14", "dtype": "float16", "batch": "2", "channels": "8", "m": "10", "nsample": "7"}
+{"case_id": "15", "dtype": "float32", "batch": "2", "channels": "8", "m": "18", "nsample": "4"}

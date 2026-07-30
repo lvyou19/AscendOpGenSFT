@@ -1,0 +1,8 @@
+{"case_id": "0", "input_shape": "[1,1,2,2]", "padding": "[1,1,1,1]", "dtype": "float16"}
+{"case_id": "1", "input_shape": "[2,4,12,24]", "padding": "[2,2,2,2]", "dtype": "bfloat16"}
+{"case_id": "2", "input_shape": "[1,1,32,32]", "padding": "[1,1,1,1]", "dtype": "float32"}
+{"case_id": "3", "input_shape": "[1,1,4,8]", "padding": "[1,0,1,0]", "dtype": "float16"}
+{"case_id": "4", "input_shape": "[1,1,6,8,16]", "padding": "[1,1,1,1,1,1]", "dtype": "float16"}
+{"case_id": "5", "input_shape": "[2,2,6,12,20]", "padding": "[2,1,2,1,2,1]", "dtype": "bfloat16"}
+{"case_id": "6", "input_shape": "[1,1,8,8,8]", "padding": "[2,2,2,2,2,2]", "dtype": "float32"}
+{"case_id": "7", "input_shape": "[2,2,10,16,24]", "padding": "[1,1,2,2,1,1]", "dtype": "float16"}

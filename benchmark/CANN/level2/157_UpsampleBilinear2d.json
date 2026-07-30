@@ -1,0 +1,7 @@
+{"case_id": "0", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "16", "out_w": "16", "align_corners": "false"}
+{"case_id": "1", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "16", "out_w": "16", "align_corners": "true"}
+{"case_id": "2", "dtype": "bfloat16", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "16", "out_w": "16", "align_corners": "false"}
+{"case_id": "3", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "4", "in_w": "4", "out_h": "4", "out_w": "4", "align_corners": "false"}
+{"case_id": "4", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "32", "in_w": "32", "out_h": "8", "out_w": "8", "align_corners": "false"}
+{"case_id": "5", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "32", "in_w": "32", "out_h": "8", "out_w": "8", "align_corners": "true"}
+{"case_id": "6", "dtype": "float32", "batch": "1", "channels": "3", "in_h": "8", "in_w": "8", "out_h": "17", "out_w": "17", "align_corners": "false"}

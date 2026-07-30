@@ -1,0 +1,10 @@
+{"case_id": "0", "dtype": "float16", "T": "64", "N": "2", "D": "16", "compress_block_size": "32", "compress_stride": "16", "act_seq_len_cumsum": "[64]", "seed": "100", "act_seq_len_type": "0"}
+{"case_id": "1", "dtype": "bfloat16", "T": "96", "N": "2", "D": "16", "compress_block_size": "32", "compress_stride": "16", "act_seq_len_cumsum": "[96]", "seed": "101", "act_seq_len_type": "0"}
+{"case_id": "2", "dtype": "float16", "T": "128", "N": "4", "D": "32", "compress_block_size": "32", "compress_stride": "16", "act_seq_len_cumsum": "[128]", "seed": "102", "act_seq_len_type": "0"}
+{"case_id": "3", "dtype": "bfloat16", "T": "80", "N": "2", "D": "16", "compress_block_size": "32", "compress_stride": "16", "act_seq_len_cumsum": "[40,80]", "seed": "103", "act_seq_len_type": "0"}
+{"case_id": "4", "dtype": "float16", "T": "256", "N": "2", "D": "16", "compress_block_size": "32", "compress_stride": "16", "act_seq_len_cumsum": "[128,256]", "seed": "104", "act_seq_len_type": "0"}
+{"case_id": "5", "dtype": "bfloat16", "T": "112", "N": "2", "D": "16", "compress_block_size": "32", "compress_stride": "16", "act_seq_len_cumsum": "[112]", "seed": "105", "act_seq_len_type": "0"}
+{"case_id": "6", "dtype": "float16", "T": "192", "N": "4", "D": "32", "compress_block_size": "64", "compress_stride": "32", "act_seq_len_cumsum": "[192]", "seed": "106", "act_seq_len_type": "0"}
+{"case_id": "7", "dtype": "bfloat16", "T": "144", "N": "2", "D": "16", "compress_block_size": "48", "compress_stride": "16", "act_seq_len_cumsum": "[144]", "seed": "107", "act_seq_len_type": "0"}
+{"case_id": "8", "dtype": "float16", "T": "160", "N": "2", "D": "16", "compress_block_size": "32", "compress_stride": "16", "act_seq_len_cumsum": "[160]", "seed": "108", "act_seq_len_type": "0"}
+{"case_id": "9", "dtype": "bfloat16", "T": "176", "N": "4", "D": "32", "compress_block_size": "32", "compress_stride": "16", "act_seq_len_cumsum": "[176]", "seed": "109", "act_seq_len_type": "0"}

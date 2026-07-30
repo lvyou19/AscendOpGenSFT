@@ -1,0 +1,10 @@
+{"case_id": "0", "input_shape": "[32, 64]", "dtype": "int32", "shape_tensor": "[100, 100, 100]", "axis": "0", "combine": "True"}
+{"case_id": "1", "input_shape": "[32, 64]", "dtype": "int32", "shape_tensor": "[100, 100, 100]", "axis": "1", "combine": "True"}
+{"case_id": "2", "input_shape": "[32, 64]", "dtype": "int32", "shape_tensor": "[100, 100, 100]", "axis": "-1", "combine": "True"}
+{"case_id": "3", "input_shape": "[32, 64]", "dtype": "int32", "shape_tensor": "[100, 100]", "axis": "0", "combine": "False"}
+{"case_id": "4", "input_shape": "[16, 16]", "dtype": "int64", "shape_tensor": "[50, 50, 50]", "axis": "0", "combine": "True"}
+{"case_id": "5", "input_shape": "[16, 16]", "dtype": "int64", "shape_tensor": "[50, 50, 50]", "axis": "1", "combine": "True"}
+{"case_id": "6", "input_shape": "[16, 16]", "dtype": "int64", "shape_tensor": "[50, 50]", "axis": "0", "combine": "False"}
+{"case_id": "7", "input_shape": "[128, 128]", "dtype": "int32", "shape_tensor": "[200, 200]", "axis": "1", "combine": "False"}
+{"case_id": "8", "input_shape": "[32, 32]", "dtype": "int32", "shape_tensor": "[32, 32, 32]", "axis": "0", "combine": "False"}
+{"case_id": "9", "input_shape": "[32, 32]", "dtype": "int32", "shape_tensor": "[32, 32, 32]", "axis": "1", "combine": "False"}

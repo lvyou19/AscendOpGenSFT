@@ -1,0 +1,6 @@
+{"case_id": "0", "x_shape": "[1,2,32,25,16]", "y_grad_shape": "[1,2,12,5,8]", "dtype": "bfloat16"}
+{"case_id": "1", "x_shape": "[2,3,17,29,16]", "y_grad_shape": "[2,3,7,9,6]", "dtype": "bfloat16"}
+{"case_id": "2", "x_shape": "[1,2,32,25,16]", "y_grad_shape": "[1,2,12,5,8]", "dtype": "float32"}
+{"case_id": "3", "x_shape": "[2,3,17,29,16]", "y_grad_shape": "[2,3,7,9,6]", "dtype": "float32"}
+{"case_id": "4", "x_shape": "[1,2,32,25,16]", "y_grad_shape": "[1,2,12,5,8]", "dtype": "float16"}
+{"case_id": "5", "x_shape": "[2,3,17,29,16]", "y_grad_shape": "[2,3,7,9,6]", "dtype": "float16"}

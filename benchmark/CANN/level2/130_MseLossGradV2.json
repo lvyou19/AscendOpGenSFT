@@ -1,0 +1,10 @@
+{"case_id": "0", "input_shape": "[48,128]", "dtype": "float32", "reduction": "mean"}
+{"case_id": "1", "input_shape": "[16,2048]", "dtype": "float16", "reduction": "mean"}
+{"case_id": "2", "input_shape": "[64,128]", "dtype": "float32", "reduction": "sum"}
+{"case_id": "3", "input_shape": "[8,4096]", "dtype": "float16", "reduction": "none"}
+{"case_id": "4", "input_shape": "[192,256,32]", "dtype": "float32", "reduction": "mean"}
+{"case_id": "5", "input_shape": "[16,64,32]", "dtype": "float16", "reduction": "sum"}
+{"case_id": "6", "input_shape": "[4096]", "dtype": "float32", "reduction": "mean"}
+{"case_id": "7", "input_shape": "[8,1024]", "dtype": "bfloat16", "reduction": "mean"}
+{"case_id": "8", "input_shape": "[32,64,128,64]", "dtype": "float32", "reduction": "sum"}
+{"case_id": "9", "input_shape": "[32,1024]", "dtype": "float16", "reduction": "none"}

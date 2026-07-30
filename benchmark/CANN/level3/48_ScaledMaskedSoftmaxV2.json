@@ -1,0 +1,14 @@
+{"case_id": "0", "batch": "1", "num_heads": "1", "seq_len": "8", "head_dim": "64", "mask_batch": "1", "mask_num_heads": "1", "dtype": "float16", "scale": "1.0"}
+{"case_id": "1", "batch": "1", "num_heads": "2", "seq_len": "16", "head_dim": "64", "mask_batch": "1", "mask_num_heads": "2", "dtype": "float16", "scale": "0.5"}
+{"case_id": "2", "batch": "2", "num_heads": "2", "seq_len": "16", "head_dim": "128", "mask_batch": "2", "mask_num_heads": "2", "dtype": "float32", "scale": "1.0"}
+{"case_id": "3", "batch": "2", "num_heads": "4", "seq_len": "32", "head_dim": "128", "mask_batch": "1", "mask_num_heads": "4", "dtype": "float16", "scale": "1.0"}
+{"case_id": "4", "batch": "2", "num_heads": "4", "seq_len": "32", "head_dim": "128", "mask_batch": "2", "mask_num_heads": "1", "dtype": "float32", "scale": "2.0"}
+{"case_id": "5", "batch": "1", "num_heads": "1", "seq_len": "8", "head_dim": "64", "mask_batch": "1", "mask_num_heads": "1", "dtype": "float32", "scale": "1.0"}
+{"case_id": "6", "batch": "2", "num_heads": "4", "seq_len": "32", "head_dim": "256", "mask_batch": "1", "mask_num_heads": "1", "dtype": "float16", "scale": "0.5"}
+{"case_id": "7", "batch": "1", "num_heads": "1", "seq_len": "8", "head_dim": "64", "mask_batch": "1", "mask_num_heads": "1", "dtype": "bfloat16", "scale": "1.0"}
+{"case_id": "8", "batch": "2", "num_heads": "2", "seq_len": "16", "head_dim": "128", "mask_batch": "1", "mask_num_heads": "1", "dtype": "bfloat16", "scale": "0.5"}
+{"case_id": "9", "batch": "1", "num_heads": "2", "seq_len": "16", "head_dim": "512", "mask_batch": "1", "mask_num_heads": "2", "dtype": "float16", "scale": "1.0"}
+{"case_id": "10", "batch": "2", "num_heads": "4", "seq_len": "64", "head_dim": "128", "mask_batch": "2", "mask_num_heads": "4", "dtype": "float16", "scale": "1.0"}
+{"case_id": "11", "batch": "1", "num_heads": "4", "seq_len": "32", "head_dim": "256", "mask_batch": "1", "mask_num_heads": "4", "dtype": "float32", "scale": "0.5"}
+{"case_id": "12", "batch": "1", "num_heads": "2", "seq_len": "16", "head_dim": "64", "mask_batch": "1", "mask_num_heads": "1", "dtype": "bfloat16", "scale": "1.0"}
+{"case_id": "13", "batch": "2", "num_heads": "4", "seq_len": "32", "head_dim": "512", "mask_batch": "1", "mask_num_heads": "1", "dtype": "float32", "scale": "1.0"}

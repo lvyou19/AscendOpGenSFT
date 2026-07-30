@@ -1,0 +1,5 @@
+{"case_id": "0", "input_shape": "[8, 4]", "normalized_shape": "[4]", "dtype": "float16", "scales_dtype": "float32", "zeros_dtype": "int32", "epsilon": "1e-6", "div_mode": "true", "has_zero_points1": "true"}
+{"case_id": "1", "input_shape": "[8, 512]", "normalized_shape": "[512]", "dtype": "float16", "scales_dtype": "float32", "zeros_dtype": "int32", "epsilon": "1e-6", "div_mode": "true", "has_zero_points1": "true"}
+{"case_id": "2", "input_shape": "[48, 64, 64]", "normalized_shape": "[64]", "dtype": "bfloat16", "scales_dtype": "bfloat16", "zeros_dtype": "bfloat16", "epsilon": "1e-6", "div_mode": "true", "has_zero_points1": "true"}
+{"case_id": "3", "input_shape": "[24, 128, 1024]", "normalized_shape": "[1024]", "dtype": "bfloat16", "scales_dtype": "float32", "zeros_dtype": "int32", "epsilon": "1e-6", "div_mode": "true", "has_zero_points1": "true"}
+{"case_id": "4", "input_shape": "[64, 1024, 512]", "normalized_shape": "[512]", "dtype": "bfloat16", "scales_dtype": "float32", "zeros_dtype": "int32", "epsilon": "1e-6", "div_mode": "true", "has_zero_points1": "true"}

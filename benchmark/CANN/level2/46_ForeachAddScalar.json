@@ -1,0 +1,5 @@
+{"case_id": "0", "input_shape": "[[48, 1024]]", "dtype": "float16", "scale": "1.0"}
+{"case_id": "1", "input_shape": "[[512, 2048]]", "dtype": "float32", "scale": "1.0"}
+{"case_id": "2", "input_shape": "[[24, 32, 3]]", "dtype": "float16", "scale": "1.0"}
+{"case_id": "3", "input_shape": "[[24, 32, 2, 14]]", "dtype": "float32", "scale": "1.0"}
+{"case_id": "4", "input_shape": "[[24, 32, 2, 5, 7]]", "dtype": "int32", "scale": "1.0"}

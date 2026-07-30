@@ -1,0 +1,15 @@
+{"case_id": "0", "num_dims": "1", "index_shape": "[10]", "dtype": "int32", "stride": "[1]", "value_size": "[10]"}
+{"case_id": "1", "num_dims": "2", "index_shape": "[10]", "dtype": "int32", "stride": "[10, 1]", "value_size": "[5, 10]"}
+{"case_id": "2", "num_dims": "3", "index_shape": "[20]", "dtype": "int32", "stride": "[100, 10, 1]", "value_size": "[5, 10, 10]"}
+{"case_id": "3", "num_dims": "2", "index_shape": "[100]", "dtype": "int32", "stride": "[50, 1]", "value_size": "[10, 50]"}
+{"case_id": "4", "num_dims": "3", "index_shape": "[256]", "dtype": "int32", "stride": "[224, 14, 1]", "value_size": "[16, 16, 14]"}
+{"case_id": "5", "num_dims": "1", "index_shape": "[10]", "dtype": "int64", "stride": "[1]", "value_size": "[10]"}
+{"case_id": "6", "num_dims": "2", "index_shape": "[10]", "dtype": "int64", "stride": "[10, 1]", "value_size": "[5, 10]"}
+{"case_id": "7", "num_dims": "3", "index_shape": "[20]", "dtype": "int64", "stride": "[100, 10, 1]", "value_size": "[5, 10, 10]"}
+{"case_id": "8", "num_dims": "2", "index_shape": "[100]", "dtype": "int64", "stride": "[50, 1]", "value_size": "[10, 50]"}
+{"case_id": "9", "num_dims": "3", "index_shape": "[256]", "dtype": "int64", "stride": "[224, 14, 1]", "value_size": "[16, 16, 14]"}
+{"case_id": "10", "num_dims": "4", "index_shape": "[100]", "dtype": "int32", "stride": "[1000, 100, 10, 1]", "value_size": "[10, 10, 10, 10]"}
+{"case_id": "11", "num_dims": "2", "index_shape": "[1024]", "dtype": "int32", "stride": "[512, 1]", "value_size": "[32, 512]"}
+{"case_id": "12", "num_dims": "3", "index_shape": "[512]", "dtype": "int64", "stride": "[3136, 56, 1]", "value_size": "[56, 56, 1]"}
+{"case_id": "13", "num_dims": "1", "index_shape": "[1]", "dtype": "int32", "stride": "[1]", "value_size": "[1]"}
+{"case_id": "14", "num_dims": "2", "index_shape": "[1]", "dtype": "int64", "stride": "[1, 1]", "value_size": "[1, 1]"}

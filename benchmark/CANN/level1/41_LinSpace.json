@@ -1,0 +1,14 @@
+{"case_id": "0", "steps": "128", "dtype": "float32", "start": "1", "end": "128"}
+{"case_id": "1", "steps": "16", "dtype": "float32", "start": "1", "end": "16"}
+{"case_id": "2", "steps": "128", "dtype": "float16", "start": "1", "end": "128"}
+{"case_id": "3", "steps": "16", "dtype": "float16", "start": "1", "end": "16"}
+{"case_id": "4", "steps": "128", "dtype": "bfloat16", "start": "1", "end": "128"}
+{"case_id": "5", "steps": "16", "dtype": "bfloat16", "start": "1", "end": "16"}
+{"case_id": "6", "steps": "128", "dtype": "uint8", "start": "1", "end": "128"}
+{"case_id": "7", "steps": "16", "dtype": "uint8", "start": "1", "end": "16"}
+{"case_id": "8", "steps": "64", "dtype": "int8", "start": "1", "end": "64"}
+{"case_id": "9", "steps": "16", "dtype": "int8", "start": "1", "end": "16"}
+{"case_id": "10", "steps": "128", "dtype": "int16", "start": "1", "end": "128"}
+{"case_id": "11", "steps": "16", "dtype": "int16", "start": "1", "end": "16"}
+{"case_id": "12", "steps": "128", "dtype": "int32", "start": "1", "end": "128"}
+{"case_id": "13", "steps": "16", "dtype": "int32", "start": "1", "end": "16"}

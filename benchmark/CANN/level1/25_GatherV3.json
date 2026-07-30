@@ -1,0 +1,7 @@
+{"case_id": "0", "self_shape": "[256, 512]", "indices_shape": "[32]", "axis": "0", "dtype": "float16"}
+{"case_id": "1", "self_shape": "[8, 16]", "indices_shape": "[4]", "axis": "0", "dtype": "float16"}
+{"case_id": "2", "self_shape": "[32, 64]", "indices_shape": "[8]", "axis": "1", "dtype": "float16"}
+{"case_id": "3", "self_shape": "[1, 32, 64]", "indices_shape": "[4]", "axis": "0", "dtype": "float16"}
+{"case_id": "4", "self_shape": "[8, 1024]", "indices_shape": "[16]", "axis": "1", "dtype": "float16"}
+{"case_id": "5", "self_shape": "[32, 512, 128]", "indices_shape": "[64]", "axis": "0", "dtype": "float16"}
+{"case_id": "6", "self_shape": "[4, 2]", "indices_shape": "[2]", "axis": "1", "dtype": "float16"}

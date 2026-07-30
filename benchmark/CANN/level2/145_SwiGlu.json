@@ -1,0 +1,14 @@
+{"case_id": "0", "input_shape": "[48, 128, 512]", "dtype": "float16", "dim": "-1"}
+{"case_id": "1", "input_shape": "[96, 64, 1024]", "dtype": "float16", "dim": "-1"}
+{"case_id": "2", "input_shape": "[32, 32, 768]", "dtype": "float32", "dim": "-1"}
+{"case_id": "3", "input_shape": "[48, 32, 4096]", "dtype": "bfloat16", "dim": "-1"}
+{"case_id": "4", "input_shape": "[48, 8192]", "dtype": "float32", "dim": "-1"}
+{"case_id": "5", "input_shape": "[48, 128, 512]", "dtype": "float16", "dim": "1"}
+{"case_id": "6", "input_shape": "[96, 64, 1024]", "dtype": "float16", "dim": "1"}
+{"case_id": "7", "input_shape": "[32, 32, 768]", "dtype": "float32", "dim": "1"}
+{"case_id": "8", "input_shape": "[48, 32, 4096]", "dtype": "bfloat16", "dim": "1"}
+{"case_id": "9", "input_shape": "[48, 8192]", "dtype": "float32", "dim": "0"}
+{"case_id": "10", "input_shape": "[48, 128, 512]", "dtype": "float16", "dim": "0"}
+{"case_id": "11", "input_shape": "[96, 64, 1024]", "dtype": "float16", "dim": "0"}
+{"case_id": "12", "input_shape": "[32, 32, 768]", "dtype": "float32", "dim": "0"}
+{"case_id": "13", "input_shape": "[48, 32, 4096]", "dtype": "bfloat16", "dim": "0"}

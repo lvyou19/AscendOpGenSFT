@@ -1,0 +1,14 @@
+{"case_id": "0", "dtype": "float16", "N": "1", "C": "3", "iD": "4", "iH": "4", "iW": "4", "oD": "8", "oH": "8", "oW": "8", "align_corners": "0"}
+{"case_id": "1", "dtype": "float16", "N": "1", "C": "3", "iD": "4", "iH": "4", "iW": "4", "oD": "8", "oH": "8", "oW": "8", "align_corners": "0"}
+{"case_id": "2", "dtype": "bfloat16", "N": "1", "C": "3", "iD": "4", "iH": "4", "iW": "4", "oD": "8", "oH": "8", "oW": "8", "align_corners": "0"}
+{"case_id": "3", "dtype": "float32", "N": "2", "C": "2", "iD": "8", "iH": "8", "iW": "8", "oD": "4", "oH": "4", "oW": "4", "align_corners": "0"}
+{"case_id": "4", "dtype": "float16", "N": "1", "C": "1", "iD": "3", "iH": "5", "iW": "6", "oD": "6", "oH": "10", "oW": "12", "align_corners": "0"}
+{"case_id": "5", "dtype": "float32", "N": "1", "C": "3", "iD": "2", "iH": "2", "iW": "2", "oD": "4", "oH": "4", "oW": "4", "align_corners": "0"}
+{"case_id": "6", "dtype": "bfloat16", "N": "2", "C": "4", "iD": "4", "iH": "4", "iW": "4", "oD": "8", "oH": "8", "oW": "8", "align_corners": "0"}
+{"case_id": "7", "dtype": "float16", "N": "1", "C": "3", "iD": "6", "iH": "6", "iW": "6", "oD": "3", "oH": "3", "oW": "3", "align_corners": "0"}
+{"case_id": "8", "dtype": "float32", "N": "1", "C": "1", "iD": "4", "iH": "4", "iW": "4", "oD": "8", "oH": "8", "oW": "8", "align_corners": "1"}
+{"case_id": "9", "dtype": "float16", "N": "1", "C": "3", "iD": "8", "iH": "8", "iW": "8", "oD": "4", "oH": "4", "oW": "4", "align_corners": "1"}
+{"case_id": "10", "dtype": "bfloat16", "N": "1", "C": "3", "iD": "4", "iH": "4", "iW": "4", "oD": "6", "oH": "6", "oW": "6", "align_corners": "1"}
+{"case_id": "11", "dtype": "float32", "N": "2", "C": "2", "iD": "4", "iH": "4", "iW": "4", "oD": "8", "oH": "8", "oW": "8", "align_corners": "1"}
+{"case_id": "12", "dtype": "float16", "N": "1", "C": "1", "iD": "3", "iH": "5", "iW": "7", "oD": "6", "oH": "10", "oW": "14", "align_corners": "0"}
+{"case_id": "13", "dtype": "float32", "N": "1", "C": "3", "iD": "8", "iH": "8", "iW": "8", "oD": "16", "oH": "16", "oW": "16", "align_corners": "0"}

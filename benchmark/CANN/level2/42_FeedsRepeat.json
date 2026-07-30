@@ -1,0 +1,3 @@
+{"case_id": "0", "feeds_shape": "[48, 128]", "feeds_repeat_times_shape": "[48]", "feeds_dtype": "float16", "feeds_repeat_times_dtype": "int32", "output_feeds_size": "1024"}
+{"case_id": "1", "feeds_shape": "[96, 64]", "feeds_repeat_times_shape": "[96]", "feeds_dtype": "float32", "feeds_repeat_times_dtype": "int64", "output_feeds_size": "512"}
+{"case_id": "2", "feeds_shape": "[48, 32]", "feeds_repeat_times_shape": "[48]", "feeds_dtype": "bfloat16", "feeds_repeat_times_dtype": "int32", "output_feeds_size": "1536"}
