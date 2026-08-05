@@ -236,7 +236,7 @@ class SystemContent(BaseModel):
     text: str
 
 class Message(BaseModel):
-    role: Literal["user", "assistant"]
+    role: Literal["user", "assistant", "system"]
     content: Union[str, List[Union[ContentBlockText, ContentBlockImage, ContentBlockToolUse, ContentBlockToolResult, ContentBlockThinking]]]
 
 class Tool(BaseModel):
@@ -282,8 +282,12 @@ class MessagesRequest(BaseModel):
         # --- Mapping Logic --- START ---
         mapped = False
         if PREFERRED_PROVIDER == "anthropic":
-            # Don't remap to big/small models, just add the prefix
-            new_model = f"anthropic/{clean_v}"
+            if 'haiku' in clean_v.lower():
+                new_model = f"anthropic/{SMALL_MODEL}"
+            elif 'sonnet' in clean_v.lower() or 'opus' in clean_v.lower() or clean_v.startswith('claude-'):
+                new_model = f"anthropic/{BIG_MODEL}"
+            else:
+                new_model = f"anthropic/{clean_v}"
             mapped = True
 
         # Map Haiku to SMALL_MODEL based on provider preference
@@ -366,8 +370,17 @@ class TokenCountRequest(BaseModel):
 
         # --- Mapping Logic --- START ---
         mapped = False
+        if PREFERRED_PROVIDER == "anthropic":
+            if 'haiku' in clean_v.lower():
+                new_model = f"anthropic/{SMALL_MODEL}"
+            elif 'sonnet' in clean_v.lower() or 'opus' in clean_v.lower() or clean_v.startswith('claude-'):
+                new_model = f"anthropic/{BIG_MODEL}"
+            else:
+                new_model = f"anthropic/{clean_v}"
+            mapped = True
+
         # Map Haiku to SMALL_MODEL based on provider preference
-        if 'haiku' in clean_v.lower():
+        elif 'haiku' in clean_v.lower():
             if PREFERRED_PROVIDER == "google" and SMALL_MODEL in GEMINI_MODELS:
                 new_model = f"gemini/{SMALL_MODEL}"
                 mapped = True
@@ -1920,6 +1933,31 @@ async def _handle_anthropic_passthrough(
 
     upstream_body = dict(body_json)
     upstream_body["model"] = upstream_model
+
+    # Extract system messages from messages array (Claude Code v2.1.220 sends them inline)
+    raw_messages = upstream_body.get("messages", [])
+    if raw_messages:
+        sys_contents = []
+        non_sys = []
+        for m in raw_messages:
+            if isinstance(m, dict) and m.get("role") == "system":
+                content = m.get("content", "")
+                if isinstance(content, str):
+                    sys_contents.append({"type": "text", "text": content})
+                elif isinstance(content, list):
+                    sys_contents.extend(content)
+            else:
+                non_sys.append(m)
+        if sys_contents:
+            existing_system = upstream_body.get("system")
+            if existing_system is None:
+                upstream_body["system"] = sys_contents
+            elif isinstance(existing_system, str):
+                upstream_body["system"] = [{"type": "text", "text": existing_system}] + sys_contents
+            elif isinstance(existing_system, list):
+                upstream_body["system"] = list(existing_system) + sys_contents
+            upstream_body["messages"] = non_sys
+
     upstream_payload = json.dumps(upstream_body, ensure_ascii=False).encode("utf-8")
 
     headers = _build_anthropic_passthrough_headers(raw_request)
