@@ -358,6 +358,32 @@ def _build_trajectory_from_rows(
         if not body:
             continue
 
+        # v2.1.220+ normalization: system messages may be in the messages array
+        # (OpenAI style) rather than in the top-level system field.  Extract them
+        # so they don't appear mid-conversation and trigger R4 violations.
+        raw_messages = body.get("messages")
+        if raw_messages:
+            sys_blocks = []
+            non_sys = []
+            for m in raw_messages:
+                if isinstance(m, dict) and m.get("role") == "system":
+                    content = m.get("content", "")
+                    if isinstance(content, str):
+                        sys_blocks.append({"type": "text", "text": content})
+                    elif isinstance(content, list):
+                        sys_blocks.extend(content)
+                else:
+                    non_sys.append(m)
+            if sys_blocks:
+                existing = body.get("system")
+                if existing is None:
+                    body["system"] = sys_blocks
+                elif isinstance(existing, str):
+                    body["system"] = [{"type": "text", "text": existing}] + sys_blocks
+                elif isinstance(existing, list):
+                    body["system"] = list(existing) + sys_blocks
+                body["messages"] = non_sys
+
         seg_message_start = len(messages)
 
         if seg_idx == 0:
@@ -423,6 +449,7 @@ def _build_trajectory_from_rows(
 
 
 def build_raw_trajectory(conn: sqlite3.Connection, session_row: sqlite3.Row) -> Optional[Dict[str, Any]]:
+    sid = session_row["session_id"]
     rows = conn.execute(
         f"""
         {_TRAJECTORY_SELECT}
@@ -430,8 +457,48 @@ def build_raw_trajectory(conn: sqlite3.Connection, session_row: sqlite3.Row) -> 
         WHERE session_id = ? AND role_kind = 'main' AND api = 'messages'
         ORDER BY started_ms ASC
         """,
-        (session_row["session_id"],),
+        (sid,),
     ).fetchall()
+
+    # v2.1.220+ fallback: all requests are role_kind='main' (including subagent ones).
+    # Exclude subagent time windows so the main trajectory only contains parent-session
+    # requests.  Subagent windows are inferred from agent_calls.parent_trace_id.
+    if rows:
+        subagent_exists = conn.execute(
+            "SELECT COUNT(*) FROM requests "
+            "WHERE session_id = ? AND role_kind = 'subagent' AND api = 'messages'",
+            (sid,),
+        ).fetchone()[0]
+        if not subagent_exists:
+            acs = conn.execute(
+                "SELECT parent_trace_id FROM agent_calls "
+                "WHERE session_id = ? AND tool_name IN ('Agent', 'Task')",
+                (sid,),
+            ).fetchall()
+            if acs:
+                spawn_starts: List[int] = []
+                for ac in acs:
+                    parent_tid = ac["parent_trace_id"]
+                    if parent_tid:
+                        spawn_row = conn.execute(
+                            "SELECT started_ms FROM requests WHERE trace_id = ?",
+                            (parent_tid,),
+                        ).fetchone()
+                        if spawn_row and spawn_row[0] is not None:
+                            spawn_starts.append(spawn_row[0])
+                if spawn_starts:
+                    spawn_starts.sort()
+                    # Build exclusion windows: [spawn_i, spawn_{i+1}) for i<n, [spawn_n, ∞)
+                    exclude_ranges: List[Tuple[int, float]] = []
+                    for i, sp in enumerate(spawn_starts):
+                        if i + 1 < len(spawn_starts):
+                            exclude_ranges.append((sp, spawn_starts[i + 1]))
+                        else:
+                            exclude_ranges.append((sp, float("inf")))
+                    rows = [r for r in rows
+                            if r["started_ms"] is not None
+                            and not any(lo <= r["started_ms"] < hi for lo, hi in exclude_ranges)]
+
     return _build_trajectory_from_rows(list(rows), session_row, "main")
 
 
@@ -523,7 +590,7 @@ def build_subagent_trajectories(
     sid = session_row["session_id"]
     acs = conn.execute(
         """
-        SELECT agent_call_id, agent_label, tool_name, started_ms, status, input_preview
+        SELECT agent_call_id, agent_label, tool_name, started_ms, status, input_preview, parent_trace_id
         FROM agent_calls
         WHERE session_id = ? AND tool_name IN ('Agent', 'Task')
         ORDER BY started_ms ASC
@@ -581,6 +648,37 @@ def build_subagent_trajectories(
         """,
         (sid,),
     ).fetchall()
+
+    # v2.1.220+ fallback: subagent requests are not tagged with role_kind='subagent';
+    # they all carry role_kind='main'. Use agent_call.parent_trace_id to find the
+    # spawn-point request; all requests after it belong to the subagent.
+    if not all_rows and acs:
+        spawn_starts: List[Optional[int]] = []
+        for ac in acs:
+            parent_tid = ac["parent_trace_id"]
+            if parent_tid:
+                spawn_row = conn.execute(
+                    "SELECT started_ms FROM requests WHERE trace_id = ?",
+                    (parent_tid,),
+                ).fetchone()
+                if spawn_row and spawn_row[0] is not None:
+                    spawn_starts.append(spawn_row[0])
+                else:
+                    spawn_starts.append(ac["started_ms"])
+            else:
+                spawn_starts.append(ac["started_ms"])
+
+        all_rows = conn.execute(
+            f"""
+            {_TRAJECTORY_SELECT}
+            FROM requests
+            WHERE session_id = ? AND role_kind = 'main' AND api = 'messages'
+            ORDER BY started_ms ASC
+            """,
+            (sid,),
+        ).fetchall()
+
+        seed_starts = spawn_starts
 
     out: List[Tuple[str, str, Dict[str, Any]]] = []
     for i, ac in enumerate(acs):
