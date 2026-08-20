@@ -22,12 +22,11 @@ script/
 └── proxy/                        ← 所有支撑脚本（不用手动跑）
     ├── trace_proxy.sh              proxy 启停（含 disown 修复）
     ├── clean_pipeline.sh            一键清洗（shell 串联 5 步，不依赖 claude）
-    ├── clean/                       5 个清洗 python 脚本
+    ├── clean/                       4 个清洗 python 脚本
     │   ├── export_training.py
     │   ├── prepare_for_training.py
     │   ├── batch_evaluate.py
-    │   ├── check_dataset.py
-    │   └── merge_dataset.py
+    │   └── check_dataset.py
     └── claude-code-proxy/           proxy 程序
         ├── server.py                   FastAPI 主程序
         ├── trace_db.py                 实时分库引擎
@@ -168,10 +167,9 @@ script/proxy/claude-code-proxy/cc_traces/batch_20260721_145351/
 
 ```
 script/proxy/claude-code-proxy/cc_traces/batch_20260721_145351/cleaned/
-├── merged.json       ← ⭐ SFT 训练集（直接喂训练）
 ├── check_report.json （检测报告：多少 PASS / FAIL）
 ├── eval_report.json  （NPU 评测报告）
-├── pass/             （通过的样本）
+├── pass/             ← ⭐ 通过的样本（SFT 训练数据）
 └── fail/             （失败的样本）
 ```
 
@@ -191,8 +189,7 @@ script/proxy/claude-code-proxy/cc_traces/batch_20260721_145351/cleaned/
 [clean] ② prepare...                ✅
 [clean] ③ batch_evaluate...         ✅ PASS=1 FAIL=0 ERROR=1
 [clean] ④ check_dataset...          ✅ pass=0, fail=12
-[clean] ⑤ merge_dataset...          ✅ 0 条样本
-[clean] 清洗完成：PASS=0, FAIL=12, 训练样本=0
+[clean] 清洗完成：PASS=0, FAIL=12（合格数据在 cleaned/pass/）
 [15:44:07] 批跑完成
 ```
 
@@ -236,4 +233,4 @@ bash script/run_benchmark_ascendc.sh \
     --proxy-port=8799
 ```
 
-跑通后应该看到：算子目录 ✓ → 算子 db ✓ → `cleaned/merged.json` ✓。
+跑通后应该看到：算子目录 ✓ → 算子 db ✓ → `cleaned/pass/` 有合格样本 ✓。

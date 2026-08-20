@@ -66,23 +66,7 @@ pass_count=$(ls "$OUT_DIR/pass/"*.json 2>/dev/null | wc -l)
 fail_count=$(ls "$OUT_DIR/fail/"*.json 2>/dev/null | wc -l)
 echo "[clean] ④ check_dataset...          ✅ pass=$pass_count, fail=$fail_count"
 
-# ── ⑤ merge_dataset ──
-python3 "$CLEAN_SCRIPTS/merge_dataset.py" \
-    "$OUT_DIR/pass/" --recursive \
-    -o "$OUT_DIR/merged.json" --allow-empty >> "$OUT_DIR/clean.log" 2>&1
-if [[ -f "$OUT_DIR/merged.json" ]]; then
-    samples=$(python3 -c "import json; print(len(json.load(open('$OUT_DIR/merged.json'))))" 2>/dev/null || echo "?")
-else
-    samples=0
-fi
-echo "[clean] ⑤ merge_dataset...          ✅ $samples 条样本"
-
 # ── 汇总 ──
-echo "[clean] 清洗完成：PASS=$pass_count, FAIL=$fail_count, 训练样本=$samples"
-if [[ "$samples" -gt 0 ]]; then
-    echo "[clean] merged.json: $OUT_DIR/merged.json"
-else
-    echo "[clean] merged.json: 未生成（无 PASS 样本）"
-fi
+echo "[clean] 清洗完成：PASS=$pass_count, FAIL=$fail_count（合格数据在 $OUT_DIR/pass/）"
 
 rm -rf "$WORK_DIR"
