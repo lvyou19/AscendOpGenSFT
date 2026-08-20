@@ -15,13 +15,25 @@
     R6  最后一条 role == "assistant"
     R7  第一条 system 的 content 不能是 compaction marker
         （[--- context compaction boundary (Claude Code /compact) ---]）
+    R8  仅主 agent，且仅在【无 --eval-report】时启用（文本回退判定）：
+        最后一条 assistant 必须明确报告"编译通过 + 全部用例通过"
+        （命中 编译...通过 + N/N 全 pass 或 "全量/全部...pass/通过" 关键词，
+         且不含 "正确性未通过" 等强失败信号）
+        子 agent（文件名含 __sub）不查 R8——它是局部任务，不产出最终汇报。
+        主 agent 仅因 R8 失败时回退看配对 sub：sub 含成功信号则救回 PASS。
     R9  同算子分组级别：每个算子必须有且只有 1 个 subagent 文件
         （文件名 <base>__sub[N]_<type>.raw.json）。多了（多次委派，可能首次失败
         重试）或少了（没委派或失败没产出）都判失败，整组（主+子）→ fail/。
+    R10 整文件级：任意位置（含 trace 中段）出现 /compact 压缩边界标记
+        → 整条 trace 视为无效。R7 只查首条 system，本规则补全文扫描。
+    R11 整文件级：任意位置出现「Subagent 运行失败」即判 FAIL。
 
-注：用例是否实际通过不由文本规则判定——由 R-eval（batch_evaluate.py 实际跑
+注：用例是否实际通过优先由 R-eval（batch_evaluate.py 实际跑
 evaluate_ascendc.sh 重编译 + verification）唯一决定。eval_report.json 里 status
-非 PASS 都强制判 FAIL（含 NO_TEST/未记录）。
+非 PASS 都强制判 FAIL（含 NO_TEST/未记录）；batch_evaluate 报告里的
+impl_regression.regressed=true（实现退化为 PyTorch 原生，validate_ascendc_impl.py
+的 Type 1-4）同样强制判 FAIL——纯 torch 兜底实现能数值通过真机评测，但对
+SFT 是毒样本。R8 文本判定只在没给 --eval-report 时作为回退启用。
 
 软规则（命中给 WARN，标 needs_manual_review，样本仍走 pass/）：
     这些规则的关键词可能出现在合法上下文里（如"修复了 error"），所以
@@ -83,6 +95,60 @@ SUBAGENT_FAIL_HINTS = re.compile(
 )
 
 SUBAGENT_TOOL_NAMES = {"Agent", "Task"}
+
+# ---- R8（仅主 agent，且仅在无 --eval-report 时启用）：文本成功信号判定 ----
+# 编译通过：编译 15 字符内出现 通过/✓/✅/成功/完成/pass（用负向先行断言排除"编译未通过/失败/出错"）
+COMPILE_OK_RE = re.compile(
+    r"编译(?!未|失败|出错|错误)[^\n]{0,15}?(?:通过|✓|✅|成功|完成|pass\b)|"
+    r"compile(?!.*fail)[^\n]{0,20}(?:pass|complete)",
+    re.I,
+)
+# N/N case pass 模式——必须带「用例语境」锚点，避免误吃路径段（如 ..._compact_75/109_...）
+# 或 shape 数字（如 625/14）。比率两侧 30 字符内须出现 case/用例/通过/pass/匹配 等词。
+# 比率本身要求两数之间是纯 " / "（允许空格），且不紧贴路径分隔或被字母/下划线包裹。
+_RATIO = r"(?<![\w/])(\d+)\s*/\s*(\d+)(?![\w])"
+CASE_CTX = r"(?:case|cases|用例|通过|pass|匹配|验证)"
+CASE_RATIO_RE = re.compile(
+    rf"{CASE_CTX}[^\n]{{0,15}}?{_RATIO}|{_RATIO}\s*(?:个)?\s*{CASE_CTX}",
+    re.I,
+)
+# 全量/全部/所有 + 通过/pass 关键词（如 "全量 PASS"、"全部用例通过"）
+ALL_PASS_KW_RE = re.compile(
+    r"(?:全[部量]|所有|全部用例)[^\n]{0,40}(?:pass|通过|PASS|✓|✅)",
+    re.I,
+)
+# 精度（验证）... ✅/PASS/通过（如 "精度验证（10 case） | ✅ PASS"）
+ACCURACY_OK_RE = re.compile(
+    r"精度(?:验证)?[^\n]{0,30}?(?:✅|✓|pass\b|通过)",
+    re.I,
+)
+# 全量验证 ... PASS/通过（表格式表述，如 "全量验证 | 12/12 PASS"、"全量验证 | **PASS**"）
+FULL_VERIFY_OK_RE = re.compile(
+    r"全量验证[^\n]{0,40}?(?:✅|✓|pass\b|\*\*pass\*\*|通过)",
+    re.I,
+)
+# 最终结论式成功信号（强结论词）：
+#   "最终状态 **PASS**" / "最终状态：PASS" / "算子开发完成…PASS" / "finally PASS" / "最终判定：成功"
+FINAL_STATE_OK_RE = re.compile(
+    r"最终状态[:：]?\s*\**\s*pass\b|"
+    r"最终判定[:：]?\s*\**\s*(?:成功|pass\b)|"
+    r"算子开发完成[^\n]{0,20}\**\s*pass\b|"
+    r"finally\s+pass\b",
+    re.I,
+)
+# 明显失败信号（出现即 FAIL，即使有部分 pass 信号也不算成功）
+# 只放无歧义的强失败短语 + 环境错误；不放 "验证失败 / 精度失败" 这种宽泛词
+# （会被"验证失败后修复收敛"这种描述历史的话误伤）
+HARD_FAIL_RE = re.compile(
+    r"正确性未通过|编译未通过|编译失败|"
+    r"全部失败|完全失败|"
+    r"全量验证受限|"
+    r"验证未通过|测试未通过|无法通过|"
+    r"环境错误|环境问题.*失败",
+    re.I,
+)
+# R11 整文件级强失败信号：trace 中任意位置出现「Subagent 运行失败」即判 FAIL
+SUBAGENT_RUN_FAIL_RE = re.compile(r"Subagent\s*运行失败", re.I)
 
 
 def _flatten_text(value: Any) -> str:
@@ -162,15 +228,72 @@ def _scan_soft_signals(messages: List[Dict[str, Any]]) -> List[str]:
 
 
 
-def check_sample(sample: Dict[str, Any], use_heuristic: bool
-                 ) -> Tuple[List[str], List[str]]:
+def _has_success_signal(text: str) -> bool:
+    """text 中是否出现「全部用例通过」类成功信号。
+
+    成功信号任一即可：
+      - N==N≥5 全过比率（用例语境下，如 16/16 case 通过）
+      - 「全量/全部...pass/通过」关键词
+      - 「精度（验证）... ✅/PASS/通过」
+      - 「全量验证 ... PASS/通过」
+      - 编译通过信号（补充）
+    """
+    for m in CASE_RATIO_RE.finditer(text):
+        nums = m.group(1, 2) if m.group(1) is not None else m.group(3, 4)
+        a, b = int(nums[0]), int(nums[1])
+        if a >= 5 and b >= 5 and a == b:
+            return True
+    return bool(ALL_PASS_KW_RE.search(text) or ACCURACY_OK_RE.search(text)
+                or FULL_VERIFY_OK_RE.search(text) or FINAL_STATE_OK_RE.search(text)
+                or COMPILE_OK_RE.search(text))
+
+
+def _r8_verdict(last_text: str, full_text_main: str) -> Optional[str]:
+    """R8 主 agent 成功判定（最后一条 → 主 agent 全文 两级）。
+
+    返回 FAIL 原因字符串；成功返回 None。
+    - 任意范围出现硬失败信号（且最终无全过信号覆盖）→ FAIL
+    - 成功信号：先看最后一条，没有再看主 agent 全文（debug trace 的 PASS
+      常在中间消息，如 "全量验证 | **PASS**（16/16）"）。
+    """
+    # 用例比率部分通过：只在【没有任何全过信号】时才判失败（历史比率不否决最终全过）
+    partial_fail: Optional[str] = None
+    has_full_pass = False
+    for m in CASE_RATIO_RE.finditer(full_text_main):
+        nums = m.group(1, 2) if m.group(1) is not None else m.group(3, 4)
+        a, b = int(nums[0]), int(nums[1])
+        if a < 5 or b < 5:
+            continue
+        if a == b:
+            has_full_pass = True
+        elif partial_fail is None:
+            partial_fail = f"{a}/{b}"
+
+    success = _has_success_signal(last_text) or _has_success_signal(full_text_main)
+
+    # 硬失败信号：出现且无全过信号覆盖 → FAIL
+    if HARD_FAIL_RE.search(full_text_main) and not success:
+        return "R8 主 agent 含明显失败信号（正确性未通过 / 编译失败 / 全量验证受限 等），且无全过信号"
+    if partial_fail and not success:
+        return f"R8 主 agent 报告用例部分通过（{partial_fail}），且无全过信号"
+    if success:
+        return None
+    return ("R8 主 agent 未报告任何成功信号"
+            "（缺 N/N 全 pass、'全量通过'、'精度...✅'、'全量验证 PASS' 或 '编译通过' 类表述）")
+
+
+def check_sample(sample: Dict[str, Any], use_heuristic: bool,
+                 is_main: bool = True,
+                 use_r8: bool = False) -> Tuple[List[str], List[str]]:
     """对一条样本返回 (errors, warnings)。
 
-    errors   = 硬规则违反（R1-R7 结构），命中任意一条 → FAIL
+    errors   = 硬规则违反（R1-R7 结构 + R8/R10/R11），命中任意一条 → FAIL
     warnings = 软规则命中（S1-S3），样本仍 PASS 但标 needs_manual_review
 
-    注：用例是否实际通过由 R-eval（batch_evaluate.py 评测脚本）判定，
-    不再靠 assistant content 关键字识别。
+    is_main：文件名含 __sub 的子 agent 传 False，不查 R8（它是局部任务，
+    不产出最终汇报）。
+    use_r8：R8 文本成功判定的总开关——仅无 --eval-report（无真机评测）时
+    由 main() 打开；有真机评测报告则成败完全由 R-eval 决定，不跑 R8。
     """
     errors: List[str] = []
     warnings: List[str] = []
@@ -182,6 +305,27 @@ def check_sample(sample: Dict[str, Any], use_heuristic: bool
     n = len(messages)
     if n < 3:
         return [f"R1 消息数 {n} < 3，无法构成最小训练样本（system+user+assistant）"], []
+
+    # 整文件文本（content + tool_calls arguments 全拼接），供 R10/R11/R8 全文扫描
+    whole_text_parts: List[str] = []
+    for m in messages:
+        if not isinstance(m, dict):
+            continue
+        whole_text_parts.append(_flatten_text(m.get("content")))
+        for tc in m.get("tool_calls") or []:
+            if isinstance(tc, dict):
+                fn = tc.get("function") if isinstance(tc.get("function"), dict) else {}
+                whole_text_parts.append(_flatten_text(fn.get("arguments")))
+    whole_text = "\n".join(whole_text_parts)
+
+    # R10 整文件级：任意位置出现 /compact 压缩边界标记 → 整条 trace 无效
+    # （compact 可能发生在 trace 中段，只查首条 system 的 R7 检不出来）
+    if COMPACTION_MARKER in whole_text:
+        errors.append("R10 文件中出现 /compact 压缩边界标记，整条 trace 视为无效")
+
+    # R11 整文件级：任意位置出现「Subagent 运行失败」即判 FAIL
+    if SUBAGENT_RUN_FAIL_RE.search(whole_text):
+        errors.append("R11 文件中出现「Subagent 运行失败」，判为失败")
 
     # R2 第一条必须是 system 且非空 / R7 不能是 compaction marker
     first = messages[0] if isinstance(messages[0], dict) else {}
@@ -217,6 +361,22 @@ def check_sample(sample: Dict[str, Any], use_heuristic: bool
     if last.get("role") != "assistant":
         errors.append(f"R6 最后一条 role={last.get('role')!r}，应为 'assistant'")
 
+    # R8（仅主 agent，且仅在无真机评测报告时）：必须报告"全部用例通过"成功信号
+    # —— 扫描两级：最后一条 assistant → 主 agent 全文（debug trace 的 PASS 常在中间消息）。
+    # 若主 agent 仍无成功信号，由 main() 做第三级回退：看配对 sub agent。
+    if use_r8 and is_main and last.get("role") == "assistant":
+        last_content = _flatten_text(last.get("content"))
+        last_text = last_content
+        for tc in last.get("tool_calls") or []:
+            if isinstance(tc, dict):
+                fn = tc.get("function") if isinstance(tc.get("function"), dict) else {}
+                last_text += "\n" + _flatten_text(fn.get("arguments"))
+        r8_err = _r8_verdict(last_text, whole_text)
+        if r8_err:
+            # 最后一条 content 为空时，在原因里额外点明（仍允许 main 做 sub 回退）
+            if not last_content.strip():
+                r8_err = "R8 最后一条 assistant 的 content 为空；" + r8_err
+            errors.append(r8_err)
 
     # 软规则
     if use_heuristic:
@@ -261,6 +421,9 @@ def _apply_eval_override(
       - eval 里 status=PASS → 不影响
       - eval 里 status=FAIL/ERROR/TIMEOUT → 强制整组 FAIL
       - eval 里 status=NO_TEST 或该算子没记录 → 强制整组 FAIL（没评测就是没验证）
+      - eval 里 impl_regression.regressed=true（实现退化为 PyTorch 原生，
+        见 validate_ascendc_impl.py）→ 强制整组 FAIL——纯 torch 兜底实现
+        也能数值通过真机评测，但对 SFT 是毒样本，必须拦下。
 
     返回：(overridden, blocked) 两个计数。
       overridden：原本 PASS 被推翻为 FAIL 的样本数
@@ -282,20 +445,29 @@ def _apply_eval_override(
             verdict = "NO_TEST"
             detail = "（无评测记录）"
         else:
-            verdict = op_eval.get("status", "NO_TEST")
-            if verdict == "PASS":
-                continue  # PASS 不影响
-            if verdict == "FAIL":
-                p = op_eval.get("passed", 0)
-                f = op_eval.get("failed", 0)
-                detail = f"（实际跑测试 {p}/{p + f} passed）"
-            elif verdict == "ERROR":
-                snippet = (op_eval.get("error_snippet", "") or "")[:80].replace("\n", " ")
-                detail = f"（实际跑测试崩溃: {snippet}）"
-            elif verdict == "TIMEOUT":
-                detail = f"（实际跑测试超时 {op_eval.get('duration_s', 0)}s）"
-            else:  # NO_TEST
-                detail = f"（{op_eval.get('error_snippet', '无 test 脚本')[:60]}）"
+            # 实现退化检测优先拦：即使真机 status=PASS，退化为 PyTorch 原生
+            # 实现的样本也判失败（真机数值对≠真的是 AscendC kernel 在算）
+            impl = op_eval.get("impl_regression") or {}
+            if impl.get("regressed"):
+                rtype = impl.get("regression_type")
+                sug = (impl.get("suggestion") or "")[:120].replace("\n", " ")
+                verdict = "REGRESSED"
+                detail = f"（实现退化 Type {rtype}：{sug}）"
+            else:
+                verdict = op_eval.get("status", "NO_TEST")
+                if verdict == "PASS":
+                    continue  # PASS 不影响
+                if verdict == "FAIL":
+                    p = op_eval.get("passed", 0)
+                    f = op_eval.get("failed", 0)
+                    detail = f"（实际跑测试 {p}/{p + f} passed）"
+                elif verdict == "ERROR":
+                    snippet = (op_eval.get("error_snippet", "") or "")[:80].replace("\n", " ")
+                    detail = f"（实际跑测试崩溃: {snippet}）"
+                elif verdict == "TIMEOUT":
+                    detail = f"（实际跑测试超时 {op_eval.get('duration_s', 0)}s）"
+                else:  # NO_TEST
+                    detail = f"（{op_eval.get('error_snippet', '无 test 脚本')[:60]}）"
 
         # 该 base 下所有 PASS 标 FAIL
         for e in list(report_passed):
@@ -530,10 +702,19 @@ def main() -> int:
         print("[check] 没有可检查的文件", file=sys.stderr)
         return 2
 
+    # R8 文本成功判定：仅作无真机评测时的回退。给了 --eval-report（无论文件
+    # 是否存在/可解析）成败都交给 R-eval，不跑 R8——真机评测优先于文本启发式。
+    use_r8 = not args.eval_report
+    if use_r8:
+        print("[check] 未提供 --eval-report：启用 R8 文本成功判定（回退模式）")
+    else:
+        print("[check] 已提供 --eval-report：成败由真机评测（R-eval）决定，R8 不生效")
+
     report_passed: List[Dict[str, Any]] = []
     report_failed: List[Dict[str, Any]] = []
     n_pass = n_fail = n_warn = 0
     needs_review_entries: List[Dict[str, Any]] = []
+    file_fulltext: Dict[str, str] = {}  # 文件路径 -> 整文件文本（用于 R8 sub 回退）
 
     for f in files:
         try:
@@ -549,8 +730,26 @@ def main() -> int:
                 break
             continue
 
+        # 文件名含 __sub 的是子 agent，不查 R8
+        is_main_for_file = "__sub" not in f.stem
         for src, sample in samples:
-            errors, warnings = check_sample(sample, args.heuristic)
+            # 缓存整文件文本（供 sub 回退用）
+            msgs = sample.get("messages") if isinstance(sample, dict) else None
+            if isinstance(msgs, list):
+                parts = []
+                for m in msgs:
+                    if not isinstance(m, dict):
+                        continue
+                    parts.append(_flatten_text(m.get("content")))
+                    for tc in m.get("tool_calls") or []:
+                        if isinstance(tc, dict):
+                            fn = tc.get("function") if isinstance(tc.get("function"), dict) else {}
+                            parts.append(_flatten_text(fn.get("arguments")))
+                file_fulltext[str(f)] = "\n".join(parts)
+
+            errors, warnings = check_sample(sample, args.heuristic,
+                                            is_main=is_main_for_file,
+                                            use_r8=use_r8)
             needs_review = bool(warnings)
             if errors:
                 status = "FAIL"
@@ -566,6 +765,7 @@ def main() -> int:
                 "status": status,
                 "errors": errors,
                 "warnings": warnings,
+                "is_main": is_main_for_file,
                 "needs_manual_review": needs_review,
             }
             if errors:
@@ -598,6 +798,40 @@ def main() -> int:
                 print(f"[check] 读入 eval 报告: {eval_path}")
             except json.JSONDecodeError as e:
                 print(f"[warn] eval 报告 JSON 解析失败: {e}（跳过 R-eval）", file=sys.stderr)
+
+    # R8 第三级回退：主 agent 仅因 R8（无成功信号）失败时，回退看【同子文件夹的配对 sub】。
+    # 若配对 sub 的整文件含成功信号且无硬失败，则认定主 agent 也成功，撤销该 FAIL。
+    def _is_r8_only_fail(entry):
+        errs = entry.get("errors") or []
+        return bool(errs) and all(e.startswith("R8") for e in errs)
+
+    # 建索引：同 base（父目录::base）下的 sub 文件全文
+    sub_text_by_key: Dict[str, List[str]] = {}
+    for path, txt in file_fulltext.items():
+        p = Path(path)
+        if "__sub" in p.stem:
+            key = f"{p.parent}::{_extract_base(p.name)}"
+            sub_text_by_key.setdefault(key, []).append(txt)
+
+    rescued = 0
+    for e in list(report_failed):
+        if not e.get("is_main") or not _is_r8_only_fail(e):
+            continue
+        key = f"{Path(e['file']).parent}::{_extract_base(Path(e['file']).name)}"
+        for sub_txt in sub_text_by_key.get(key, []):
+            if _has_success_signal(sub_txt) and not (
+                    HARD_FAIL_RE.search(sub_txt) or SUBAGENT_RUN_FAIL_RE.search(sub_txt)):
+                e["status"] = "PASS"
+                e["errors"] = []
+                e["warnings"].append(
+                    "R8-sub-rescue 主 agent 无成功信号，但配对 sub agent 含全过信号，判为成功")
+                e["needs_manual_review"] = True
+                report_failed.remove(e)
+                report_passed.append(e)
+                rescued += 1
+                break
+    if rescued:
+        print(f"[check] R8 sub 回退：{rescued} 个主 agent 因配对 sub 含成功信号被救回为 PASS")
 
     if args.group_by_base:
         r9_demoted, eval_overridden, eval_blocked, group_demoted = _apply_grouping(

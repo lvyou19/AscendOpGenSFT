@@ -25,7 +25,13 @@ evaluate_ascendc.sh 不在本 skill 里——自动从 .claude/skills/*/scripts/
           "passed": 0, "failed": 6,
           "exit_code": 1,
           "duration_s": 5.0,
-          "error_snippet": "..."
+          "error_snippet": "...",
+          "impl_regression": {       # 实现退化检测（AST 静态分析，不占 NPU）
+              "checked": true,       # 是否检测了（无 model_new_ascendc.py 则 false）
+              "regressed": false,    # true = 退化为 PyTorch 原生实现
+              "regression_type": 3,  # 1-4 见 validate_ascendc_impl.py
+              "suggestion": "..."
+          }
         }
       }
     }
@@ -43,6 +49,10 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
+
+# 同目录的 AscendC 实现退化检测器（AST 静态分析）
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from validate_ascendc_impl import validate as validate_impl
 
 RESULT_RE = re.compile(r"^Result[:：]\s*(pass|fail)\s*$", re.I | re.M)
 TOTAL_RE = re.compile(
@@ -101,14 +111,62 @@ def find_eval_script(explicit: Optional[str] = None) -> Optional[Path]:
     return None
 
 
+def _find_impl_file(op_dir: Path) -> Optional[Path]:
+    """在算子目录下找生成的 AscendC 实现文件 model_new_ascendc.py（含 kernel/ 子目录）。"""
+    candidates = [op_dir / "model_new_ascendc.py",
+                  op_dir / "kernel" / "model_new_ascendc.py"]
+    for c in candidates:
+        if c.is_file():
+            return c
+    # 兜底：目录下任意 model_new*.py
+    for c in sorted(op_dir.rglob("model_new*.py")):
+        if c.is_file():
+            return c
+    return None
+
+
+def check_impl_regression(op_dir: Path) -> Dict[str, Any]:
+    """对算子的 AscendC 实现跑退化检测（AST 静态分析，不占 NPU）。
+
+    返回 impl_regression 字段；无实现文件时 checked=false 不判退化
+    （是否算失败由调用方/无 kernel 目录的既有 NO_TEST 逻辑决定）。
+    """
+    impl = _find_impl_file(op_dir)
+    if impl is None:
+        return {"checked": False, "regressed": False,
+                "regression_type": None, "suggestion": "未找到 model_new_ascendc.py"}
+
+    try:
+        code = impl.read_text(encoding="utf-8", errors="replace")
+        result = validate_impl(code, filepath=str(impl))
+    except Exception as e:  # 检测器崩溃不能拖垮评测
+        return {"checked": False, "regressed": False,
+                "regression_type": None,
+                "suggestion": f"退化检测异常（不判定）: {e}"}
+
+    if result["valid"]:
+        return {"checked": True, "regressed": False,
+                "regression_type": None, "suggestion": ""}
+    return {"checked": True, "regressed": True,
+            "regression_type": result["regression_type"],
+            "suggestion": result.get("suggestion", "")}
+
+
 def run_one(op_dir: Path, eval_script: Path, scripts_dir: Path, timeout: int, npu_id: str = None) -> Dict[str, Any]:
     """跑单个算子的 evaluate_ascendc.sh。用临时 WORKDIR 不污染算子根。"""
+    # 实现退化检测先行（静态、毫秒级）；无 kernel/ 目录的算子照旧直接 NO_TEST
+    impl_regression = check_impl_regression(op_dir) if (op_dir / "kernel").is_dir() else {
+        "checked": False, "regressed": False, "regression_type": None,
+        "suggestion": "算子目录无 kernel/ 子目录",
+    }
     if not (op_dir / "kernel").is_dir():
-        return {
+        ret = {
             "status": "NO_TEST", "passed": 0, "failed": 0,
             "exit_code": None, "duration_s": 0.0,
             "error_snippet": "算子目录无 kernel/ 子目录",
         }
+        ret["impl_regression"] = impl_regression
+        return ret
 
     start = time.time()
     env = os.environ.copy()
@@ -156,6 +214,7 @@ def run_one(op_dir: Path, eval_script: Path, scripts_dir: Path, timeout: int, np
                     "exit_code": proc.returncode,
                     "duration_s": round(duration, 1),
                     "error_snippet": snippet,
+                    "impl_regression": impl_regression,
                 }
             snippet = out[-500:]
             return {
@@ -163,18 +222,21 @@ def run_one(op_dir: Path, eval_script: Path, scripts_dir: Path, timeout: int, np
                 "exit_code": proc.returncode,
                 "duration_s": round(duration, 1),
                 "error_snippet": snippet,
+                "impl_regression": impl_regression,
             }
     except subprocess.TimeoutExpired:
         return {
             "status": "TIMEOUT", "passed": 0, "failed": -1, "exit_code": None,
             "duration_s": round(time.time() - start, 1),
             "error_snippet": f"超时（>{timeout}s）",
+            "impl_regression": impl_regression,
         }
     except Exception as e:
         return {
             "status": "ERROR", "passed": 0, "failed": -1, "exit_code": None,
             "duration_s": round(time.time() - start, 1),
             "error_snippet": f"批量脚本异常: {e}",
+            "impl_regression": impl_regression,
         }
 
 
