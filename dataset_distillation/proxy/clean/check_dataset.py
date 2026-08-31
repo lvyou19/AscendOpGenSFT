@@ -21,9 +21,11 @@
          且不含 "正确性未通过" 等强失败信号）
         子 agent（文件名含 __sub）不查 R8——它是局部任务，不产出最终汇报。
         主 agent 仅因 R8 失败时回退看配对 sub：sub 含成功信号则救回 PASS。
-    R9  同算子分组级别：每个算子必须有且只有 1 个 subagent 文件
+    R9  同算子分组级别（同一子文件夹内）：每个算子必须有且只有 1 个 subagent 文件
         （文件名 <base>__sub[N]_<type>.raw.json）。多了（多次委派，可能首次失败
         重试）或少了（没委派或失败没产出）都判失败，整组（主+子）→ fail/。
+        分组键带父目录（父目录::base）——不同子文件夹的同名算子互不连带
+        （不同文件夹是不同人/不同批次收集的，跨文件夹不应互相污染 R9 计数）。
     R10 整文件级：任意位置（含 trace 中段）出现 /compact 压缩边界标记
         → 整条 trace 视为无效。R7 只查首条 system，本规则补全文扫描。
     R11 整文件级：任意位置出现「Subagent 运行失败」即判 FAIL。
@@ -41,10 +43,18 @@ SFT 是毒样本。R8 文本判定只在没给 --eval-report 时作为回退启�
     S1  最后一条 assistant 命中失败关键词（traceback/exception/exit code 等）
     S2  任意 tool result 命中 token / context 超限信号（max_tokens/context length 等）
     S3  任意 Agent/Task tool_call 对应的 tool result 命中 subagent 失败信号
+    S-cross 跨子目录同算子重复（源自 stat_operators 的跨来源检测）：同一算子
+        语义名（去编号前缀）出现在 >1 个子文件夹。只报告不 FAIL——
+        分组键带父目录后跨目录被正确隔离，但训练集会过采样该算子，
+        需人工决定去重。明细在报告 summary.cross_dir_duplicates。
 
 分流（--split <dir>）：
     PASS（硬规则全过）→ mv 到 <dir>/pass/
     FAIL（任意硬规则违反）→ mv 到 <dir>/fail/
+
+分流（--copy-passed <dir>，与 --split 互斥）：
+    只把 PASS 文件 copy 到目标目录（保留相对 --copy-base 的子目录结构），
+    绝不移动/删除原文件；FAIL 文件不复制，仅在报告里列路径+数量。
 
 用法：
     # 只检查
@@ -55,6 +65,8 @@ SFT 是毒样本。R8 文本判定只在没给 --eval-report 时作为回退启�
     python3 scripts/check_dataset.py work/cleaned/ -r --no-heuristic --split work/cleaned
     # 试运行（不实际 move 文件）
     python3 scripts/check_dataset.py work/cleaned/ -r --split work/cleaned --dry-run
+    # 检查 + 只复制合格文件（原数据不动）
+    python3 scripts/check_dataset.py work/cleaned/ -r --copy-passed work/passed --copy-base work/cleaned
 
 退出码：所有文件全 PASS = 0；任意文件 FAIL = 1。
 """
@@ -392,22 +404,75 @@ def _extract_base(filename: str) -> str:
       单 sub:  <base>__sub_<type>.raw.json      （suffix='sub'，无数字）
       多 sub:  <base>__subN_<type>.raw.json     （N=1,2,...）
 
+    外部收集的数据还有纯 .json 命名（不带 .raw），__sub 剥离不能依赖后缀：
+      0_add__sub_explore.json             → '0_add'
+    否则主/子文件抽出的 base 不同，分不到同组，R9 会把明明有 sub 的组
+    误报成 subagent 数量 0。
+
     所以：
       0_add.raw.json                       → '0_add'
       0_add__sub_explore.raw.json          → '0_add'   ← 单子，无数字
       0_add__sub1_explore.raw.json         → '0_add'   ← 多子第 1 个
       0_add__sub10_plan.raw.json           → '0_add'
-    其他形态 → 文件 stem（独立成组，不影响别人）。
+      0_add__sub_explore.json              → '0_add'   ← 纯 .json 同样剥
+    其他形态 → 文件 stem。
     """
-    # 先剥 .raw.json / .clean.json 后缀
+    # 先剥 .raw.json / .clean.json 后缀；纯 .json 则取 stem
     m = re.match(r'^(.+?)\.(?:raw|clean)\.json$', filename)
-    if not m:
-        return Path(filename).stem
-    stem = m.group(1)
+    stem = m.group(1) if m else Path(filename).stem
     # 切掉 __sub<可选数字>_ 后缀
     sep = re.search(r'__sub\d*_', stem)
     return stem[:sep.start()] if sep else stem
 
+
+
+def _group_key(entry: Dict[str, Any]) -> str:
+    """同组判定的键：父目录 + 算子 base name。
+
+    必须带父目录，使【同名算子但在不同子文件夹】不被当作同组——
+    不同文件夹是不同人/不同批次收集的，跨文件夹不应互相连带判失败
+    （否则两个子文件夹各有 1 个 sub 的同名算子会被 R9 误算成 2 个而整组 FAIL）。
+    """
+    path = Path(entry.get("file") or entry.get("source") or "")
+    base = _extract_base(path.name)
+    return f"{path.parent}::{base}"
+
+
+def _detect_cross_dir_duplicates(report_passed: List[Dict[str, Any]],
+                                 report_failed: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """检测跨子目录的同算子重复（S-cross 规则，只报告不 FAIL）。
+
+    源自 tools/scripts/stat_operators.py 的跨来源重复检测：同一算子
+    （去编号前缀后的语义名）出现在 >1 个不同子文件夹 → 记录到报告，
+    提醒训练集会过采样该算子。分组的父目录::base 键恰好隔离了跨目录
+    情形，这里显式回收这个信号——只标记，不影响 pass/fail 判定。
+    """
+    from collections import defaultdict
+
+    # semantic name: 去掉 "9_TopK" 的 "9_" 前缀（跨来源归并口径与 stat_operators 一致）
+    def _sem(base: str) -> str:
+        m = re.match(r"\d+_(.+)", base)
+        return m.group(1) if m else base
+
+    # 语义名 -> {父目录: [组键]}
+    sem_to_dirs: Dict[str, Dict[str, list]] = defaultdict(dict)
+    for e in report_passed + report_failed:
+        gkey = _group_key(e)
+        parent, base = gkey.split("::", 1)
+        sem = _sem(base)
+        sem_to_dirs[sem].setdefault(parent, []).append(gkey)
+
+    dups = []
+    for sem, dirs in sorted(sem_to_dirs.items()):
+        if len(dirs) < 2:
+            continue
+        dups.append({
+            "op": sem,
+            "n_dirs": len(dirs),
+            "dirs": sorted(dirs),
+            "groups": sorted(g for gs in dirs.values() for g in gs),
+        })
+    return dups
 
 
 def _apply_eval_override(
@@ -433,12 +498,13 @@ def _apply_eval_override(
         return 0, 0
     overridden = 0
     blocked = 0
-    # 收集所有需要判定的 base（即所有出现过的算子组）
-    all_bases = set()
+    # 收集所有需要判定的组键（父目录::base，即所有出现过的算子组）
+    all_keys = set()
     for e in report_passed + report_failed:
-        all_bases.add(_extract_base(Path(e["source"]).name))
+        all_keys.add(_group_key(e))
 
-    for base in all_bases:
+    for gkey in all_keys:
+        base = gkey.split("::", 1)[-1]
         op_eval = eval_report["ops"].get(base)
         if op_eval is None:
             # 该算子没评测记录 → 强制 FAIL
@@ -469,9 +535,9 @@ def _apply_eval_override(
                 else:  # NO_TEST
                     detail = f"（{op_eval.get('error_snippet', '无 test 脚本')[:60]}）"
 
-        # 该 base 下所有 PASS 标 FAIL
+        # 该组（父目录::base）下所有 PASS 标 FAIL
         for e in list(report_passed):
-            if _extract_base(Path(e["source"]).name) != base:
+            if _group_key(e) != gkey:
                 continue
             e["status"] = "FAIL"
             e["errors"].append(
@@ -507,13 +573,13 @@ def _apply_grouping(
     group_demoted = 0
 
     all_entries = report_passed + report_failed
-    base_to_entries: Dict[str, List[Dict[str, Any]]] = {}
+    group_to_entries: Dict[str, List[Dict[str, Any]]] = {}
     for e in all_entries:
-        b = _extract_base(Path(e["source"]).name)
-        base_to_entries.setdefault(b, []).append(e)
+        group_to_entries.setdefault(_group_key(e), []).append(e)
 
     # 1. R9: subagent 数量必须正好是 1（用户规则：有且只有 1 个 subagent）
-    for base, entries in base_to_entries.items():
+    for gkey, entries in group_to_entries.items():
+        disp = gkey.split("::", 1)[-1]
         sub_count = sum(1 for e in entries
                         if '__sub' in Path(e["source"]).stem)
         if sub_count == 1:
@@ -523,7 +589,7 @@ def _apply_grouping(
                 continue
             e["status"] = "FAIL"
             e["errors"].append(
-                f"R9 算子 {base!r} 的 subagent 数量为 {sub_count}，应为 1"
+                f"R9 算子组 {disp!r}（同子文件夹）的 subagent 数量为 {sub_count}，应为 1"
             )
             e["needs_manual_review"] = False
             report_passed.remove(e)
@@ -537,7 +603,8 @@ def _apply_grouping(
         )
 
     # 3. R-group: 任意成员 FAIL → 整组 FAIL（含从 passed 移到 failed）
-    for b, entries in base_to_entries.items():
+    for gkey, entries in group_to_entries.items():
+        disp = gkey.split("::", 1)[-1]
         fail_names = [Path(m["source"]).name for m in entries
                       if m["status"] == "FAIL"]
         if not fail_names:
@@ -547,7 +614,7 @@ def _apply_grouping(
                 continue
             e["status"] = "FAIL"
             e["errors"].append(
-                f"R-group 同算子组 {b!r} 内有成员 FAIL"
+                f"R-group 同算子组 {disp!r}（同子文件夹）内有成员 FAIL"
                 f"（{', '.join(fail_names)}），整组判失败"
             )
             e["needs_manual_review"] = False
@@ -556,12 +623,12 @@ def _apply_grouping(
             group_demoted += 1
 
     # 4. needs_manual_review 传播（只在剩下的 PASS 成员间）
-    base_to_pass: Dict[str, List[Dict[str, Any]]] = {}
+    group_to_pass: Dict[str, List[Dict[str, Any]]] = {}
     for e in report_passed:
-        b = _extract_base(Path(e["source"]).name)
-        base_to_pass.setdefault(b, []).append(e)
+        group_to_pass.setdefault(_group_key(e), []).append(e)
 
-    for b, entries in base_to_pass.items():
+    for gkey, entries in group_to_pass.items():
+        disp = gkey.split("::", 1)[-1]
         review_members = [e for e in entries if e.get("needs_manual_review")]
         clean_members = [e for e in entries if not e.get("needs_manual_review")]
         if not review_members or not clean_members:
@@ -571,7 +638,7 @@ def _apply_grouping(
             fname = Path(m["source"]).name
             for w in m["warnings"]:
                 review_summary.append(f"{fname}: {w}")
-        reason = (f"S-group 同算子组 {b!r} 内有可疑成员"
+        reason = (f"S-group 同算子组 {disp!r}（同子文件夹）内有可疑成员"
                   f"（{'；'.join(review_summary)}）")
         for e in clean_members:
             e["warnings"].append(reason)
@@ -624,9 +691,26 @@ def _is_under(path: Path, ancestor: Path) -> bool:
 
 
 def collect_files(targets: List[str], recursive: bool,
-                  exclude_dirs: List[Path] = None) -> List[Path]:
-    """收集所有待检查的文件。exclude_dirs 下的文件会被跳过。"""
+                  exclude_dirs: List[Path] = None,
+                  exclude_suffixes: List[str] = None) -> List[Path]:
+    """收集所有待检查的文件。
+
+    exclude_dirs       : 这些目录（含子树）下的文件会被跳过。
+    exclude_suffixes   : 路径中任一层目录名「小写后以该后缀结尾」则整树跳过
+                         （如 'failed' 排除 level_1_failed/）。大小写不敏感。
+    """
     excludes = exclude_dirs or []
+    suffixes = [s.lower() for s in (exclude_suffixes or [])]
+
+    def _suffix_excluded(c: Path) -> bool:
+        if not suffixes:
+            return False
+        for part in c.parts:
+            pl = part.lower()
+            if any(pl.endswith(suf) for suf in suffixes):
+                return True
+        return False
+
     files: List[Path] = []
     for t in targets:
         p = Path(t)
@@ -640,6 +724,8 @@ def collect_files(targets: List[str], recursive: bool,
             candidates += sorted(p.rglob("*.jsonl")) if recursive else sorted(p.glob("*.jsonl"))
             for c in candidates:
                 if any(_is_under(c, ex) for ex in excludes):
+                    continue
+                if _suffix_excluded(c):
                     continue
                 files.append(c)
         else:
@@ -662,6 +748,25 @@ def _split_sample(src_file: Path, split_dir: Path, status: str, dry_run: bool) -
     return dst
 
 
+def _copy_passed(src_file: Path, base_root: Path, dst_root: Path,
+                 dry_run: bool) -> Path:
+    """把合格文件 copy 到 dst_root，保留相对 base_root 的子目录结构。
+
+    只复制，绝不移动/删除原文件。
+    """
+    try:
+        rel = src_file.resolve().relative_to(base_root.resolve())
+    except ValueError:
+        rel = Path(src_file.name)  # 不在 base_root 下则只保留文件名
+    dst = dst_root / rel
+    if dry_run:
+        print(f"[dry] copy {src_file} -> {dst}")
+    else:
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(str(src_file), str(dst))
+    return dst
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
@@ -679,8 +784,19 @@ def main() -> int:
                          "整组标。加这个参数后每个文件独立判定。")
     ap.add_argument("--split", metavar="DIR",
                     help="检测完后把样本文件 mv 到 DIR/pass/（PASS）或 DIR/fail/（FAIL）")
+    ap.add_argument("--copy-passed", metavar="DIR",
+                    help="只把合格(PASS)文件 copy 到 DIR（保留相对子目录结构），"
+                         "绝不移动/删除原文件；FAIL 文件不复制，仅在报告里列路径+数量。"
+                         "与 --split 互斥（--split 会移动原文件）。")
+    ap.add_argument("--copy-base", metavar="DIR",
+                    help="计算相对子目录结构时的基准根目录（默认取第一个输入目录）。"
+                         "仅配合 --copy-passed 使用。")
+    ap.add_argument("--exclude-suffix", action="append", default=[],
+                    metavar="SUFFIX",
+                    help="排除名字（小写后）以该后缀结尾的目录，整树跳过。可重复。"
+                         "如 --exclude-suffix failed 排除 level_1_failed/。")
     ap.add_argument("--dry-run", action="store_true",
-                    help="只打印会做什么，不实际 move（与 --split 配合）")
+                    help="只打印会做什么，不实际 move/copy（与 --split/--copy-passed 配合）")
     ap.add_argument("--eval-report", metavar="JSON",
                     help="batch_evaluate.py 产出的 JSON 报告路径。"
                          "强制规则：pass/ 必须是脚本验证通过的。eval 里 status=PASS 才放行，"
@@ -691,13 +807,28 @@ def main() -> int:
     ap.set_defaults(heuristic=True, group_by_base=True)
     args = ap.parse_args()
 
+    if args.split and args.copy_passed:
+        print("[check] --split 与 --copy-passed 互斥（前者移动原文件，后者只复制）",
+              file=sys.stderr)
+        return 2
+
     split_dir = Path(args.split) if args.split else None
+    copy_dir = Path(args.copy_passed) if args.copy_passed else None
+    # copy-passed 的相对结构基准：优先 --copy-base，否则取第一个输入目录
+    copy_base = None
+    if copy_dir:
+        if args.copy_base:
+            copy_base = Path(args.copy_base)
+        else:
+            first = Path(args.inputs[0])
+            copy_base = first if first.is_dir() else first.parent
     # 输入和 split 同目录时，跳过前次分流产生的 pass/ fail/ 子目录
     exclude_dirs: List[Path] = []
     if split_dir:
         exclude_dirs = [split_dir / "pass", split_dir / "fail"]
 
-    files = collect_files(args.inputs, args.recursive, exclude_dirs)
+    files = collect_files(args.inputs, args.recursive, exclude_dirs,
+                          exclude_suffixes=args.exclude_suffix)
     if not files:
         print("[check] 没有可检查的文件", file=sys.stderr)
         return 2
@@ -869,15 +1000,43 @@ def main() -> int:
         for e in needs_review_entries:
             e["file"] = str(pass_dir / Path(e["file"]).name)
 
+    # 只复制合格文件（不动原文件）。FAIL 文件不复制，只在下方报告里列出。
+    if copy_dir:
+        files_to_pass: Set[Path] = {Path(e["file"]) for e in report_passed}
+        n_copied = 0
+        for f in sorted(files_to_pass):
+            _copy_passed(f, copy_base, copy_dir, args.dry_run)
+            n_copied += 1
+        tag = "（dry-run，未实际 copy）" if args.dry_run else ""
+        print(f"[check] 已复制合格文件 {n_copied} 个 -> {copy_dir}{tag}")
+
     print()
     print(f"[check] 总结：PASS={n_pass}  FAIL={n_fail}（其中带 WARN 的 PASS={n_warn}）")
     if split_dir:
         tag = "（dry-run，未实际 move）" if args.dry_run else ""
         print(f"[check] 已分流：pass/ {n_pass} 个，fail/ {n_fail} 个{tag}")
+
+    # 不合格文件清单（路径 + 数量）—— 供用户判断是否需要处理
+    fail_files: List[str] = sorted({e["file"] for e in report_failed})
+    if fail_files:
+        print(f"[check] ✗ 不合格文件（{len(fail_files)} 个）:")
+        for ff in fail_files:
+            print(f"  - {ff}")
+    else:
+        print("[check] ✓ 无不合格文件")
     if needs_review_entries:
         print(f"[check] ⚠ 需人工复查的 PASS 样本（{len(needs_review_entries)} 个）:")
         for e in needs_review_entries:
             print(f"  - {e['file']}  ← {'; '.join(e['warnings'])}")
+
+    # S-cross：跨子目录同算子重复（只报告，不 FAIL）——分组键带父目录后
+    # 跨目录情形被隔离，这里显式回收该信号，防止训练集无声过采样
+    cross_dups = _detect_cross_dir_duplicates(report_passed, report_failed)
+    if cross_dups:
+        print(f"[check] ⚠ 跨子目录重复算子（{len(cross_dups)} 个，训练集会过采样，建议人工去重）:")
+        for d in cross_dups:
+            print(f"  - {d['op']}  ×{d['n_dirs']} 个目录: "
+                  f"{', '.join(p.split('/')[-1] for p in d['dirs'])}")
 
     if args.output:
         out_path = Path(args.output)
@@ -888,7 +1047,10 @@ def main() -> int:
         out_path.write_text(
             json.dumps(
                 {"summary": {"pass": n_pass, "fail": n_fail, "warn_pass": n_warn,
-                             "needs_manual_review": len(needs_review_entries)},
+                             "needs_manual_review": len(needs_review_entries),
+                             "fail_files": fail_files,
+                             "fail_file_count": len(fail_files),
+                             "cross_dir_duplicates": cross_dups},
                  "passed": [_strip(e) for e in report_passed],
                  "failed": [_strip(e) for e in report_failed]},
                 ensure_ascii=False, indent=2,
