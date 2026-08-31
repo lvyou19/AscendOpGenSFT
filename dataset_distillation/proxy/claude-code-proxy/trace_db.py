@@ -339,6 +339,20 @@ def classify_request(api: str, body: Dict[str, Any], headers: Dict[str, str]) ->
     if any(hint in sys_text for hint in _TITLER_HINTS) and len(tool_names) == 0:
         role_kind = "titler"
         agent_label = "titler"
+    # --- Subagent identification (version-compatible, highest priority first) ---
+    # L1: CC >= 2.1.221 injects cc_is_subagent=true into the billing-header system
+    #     block. Authoritative signal — checked BEFORE the tools heuristic because
+    #     221+ subagents advertise the full tool list (incl. Agent), which used to
+    #     misclassify them as main.
+    elif "cc_is_subagent=true" in sys_text:
+        role_kind = "subagent"
+        agent_label = "subagent"
+    # L2: subagent-only system prose ("You are an agent for Claude Code...").
+    #     Version-independent; covers CC builds and SDK subagents that lack the
+    #     billing-header marker but still carry Agent in their tool list.
+    elif "You are an agent for Claude Code" in sys_text:
+        role_kind = "subagent"
+        agent_label = "subagent"
     elif has_agent_tool:
         role_kind = "main"
         agent_label = "main"
