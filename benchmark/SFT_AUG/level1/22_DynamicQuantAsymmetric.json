@@ -1,0 +1,20 @@
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [16, 128]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "bfloat16", "shape": [8, 4, 64]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [32, 256]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [64, 512]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [4, 64]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "bfloat16", "shape": [32, 256]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [2, 4, 128]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "bfloat16", "shape": [8, 8, 64]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [128, 1024]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "bfloat16", "shape": [16, 512]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [3, 5, 96]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [2, 4, 512]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "bfloat16", "shape": [100, 64]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [7, 33, 66]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "bfloat16", "shape": [50, 100]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [3, 9, 270]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "bfloat16", "shape": [128, 256]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [6, 6, 6, 6]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "bfloat16", "shape": [9, 99]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
+{"inputs": [{"name": "input", "type": "tensor", "required": true, "dtype": "float16", "shape": [4, 40, 1024]}, {"name": "quant_mode", "type": "attr", "required": false, "dtype": "str", "value": "pertoken"}]}
