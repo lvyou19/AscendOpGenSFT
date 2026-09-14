@@ -7,11 +7,55 @@ class Model(nn.Module):
     """
     Model that performs fused inference attention score computation using NPU accelerated npu_fused_infer_attention_score.
     Supports both prompt (full) and incremental inference scenarios for FlashAttention.
+
+    Torch native implementation (equivalent to npu_fused_infer_attention_score for standard MHA path):
+        # 1. Infer shapes and reshape to BNSD based on input_layout
+        if input_layout == "BSH":
+            batch_size, seq_len, hidden = query.shape
+            _, seq_len_kv, _ = key.shape
+            head_dim = hidden // num_heads
+            q = query.view(batch_size, seq_len, num_heads, head_dim).transpose(1, 2)
+            k = key.view(batch_size, seq_len_kv, num_key_value_heads or num_heads, head_dim).transpose(1, 2)
+            v = value.view(batch_size, seq_len_kv, num_key_value_heads or num_heads, head_dim).transpose(1, 2)
+        elif input_layout == "BNSD":
+            q, k, v = query, key, value
+            batch_size = q.shape[0]
+            seq_len = q.shape[2]
+            seq_len_kv = k.shape[2]
+            head_dim = q.shape[-1]
+        else:
+            raise NotImplementedError(f"Layout {input_layout} not supported in native impl")
+
+        # 2. GQA: repeat k/v heads to match q heads
+        if num_key_value_heads and num_key_value_heads != num_heads:
+            n_rep = num_heads // num_key_value_heads
+            k = k.repeat_interleave(n_rep, dim=1)
+            v = v.repeat_interleave(n_rep, dim=1)
+
+        # 3. Compute attention scores: Q @ K^T * scale
+        scores = torch.matmul(q, k.transpose(-2, -1)) * scale
+
+        # 4. Apply attention mask (bool mask or additive mask)
+        if atten_mask is not None:
+            if atten_mask.dtype == torch.bool:
+                scores = scores.masked_fill(atten_mask, float('-inf'))
+            else:
+                scores = scores + atten_mask
+
+        # 5. Softmax over the last dimension
+        attn_weights = torch.softmax(scores, dim=-1)
+
+        # 6. Apply attention weights to value
+        out = torch.matmul(attn_weights, v)
+
+        # 7. Reshape back to BSH
+        out = out.transpose(1, 2).contiguous().view(batch_size, seq_len, -1)
+        return out, None
     """
     def __init__(self):
         super(Model, self).__init__()
 
-    def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor, *,
+    def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor,
                 pse_shift=None, atten_mask=None, actual_seq_lengths=None,
                 actual_seq_lengths_kv=None, dequant_scale1=None, quant_scale1=None,
                 dequant_scale2=None, quant_scale2=None, quant_offset2=None,
@@ -63,6 +107,7 @@ class Model(nn.Module):
             next_tokens (int): Backward token count for sparse, default 2147483647.
             input_layout (str): Data layout, supports BSH/BSND/BNSD/TND etc., default "BSH".
             num_key_value_heads (int): Number of key/value heads for GQA, default 0.
+                Note: 0 means MHA (non-GQA), i.e., num_key_value_heads equals num_heads.
             sparse_mode (int): Sparse mode, default 0.
             inner_precise (int): Precision/performance mode, default 0.
             block_size (int): PageAttention block size, default 0.
@@ -75,6 +120,12 @@ class Model(nn.Module):
             tuple: (attention_out, softmax_lse)
         """
         import torch_npu
+
+        # Defensive fix: num_key_value_heads=0 indicates MHA (non-GQA) where
+        # num_key_value_heads should equal num_heads. Some NPU kernels may
+        # misinterpret 0 as 1, causing head_dim mismatch.
+        effective_nkv = num_key_value_heads if num_key_value_heads > 0 else num_heads
+
         return torch_npu.npu_fused_infer_attention_score(
             query, key, value,
             pse_shift=pse_shift, atten_mask=atten_mask,
@@ -94,7 +145,7 @@ class Model(nn.Module):
             key_rope_antiquant_scale=key_rope_antiquant_scale,
             num_heads=num_heads, scale=scale,
             pre_tokens=pre_tokens, next_tokens=next_tokens,
-            input_layout=input_layout, num_key_value_heads=num_key_value_heads,
+            input_layout=input_layout, num_key_value_heads=effective_nkv,
             sparse_mode=sparse_mode, inner_precise=inner_precise,
             block_size=block_size, antiquant_mode=antiquant_mode,
             softmax_lse_flag=softmax_lse_flag,
@@ -103,9 +154,18 @@ class Model(nn.Module):
 
 
 def get_input_groups():
-    json_path = os.path.join(os.path.dirname(__file__), "10_FusedInferAttentionScore.json")
+    json_path = os.path.join(os.path.dirname(__file__), "12_FusedInferAttentionScore.json")
     with open(json_path, "r") as f:
         cases = [json.loads(line) for line in f if line.strip()]
+
+    def random_tensor(shape, dtype):
+        """独立随机选择正态/均匀分布"""
+        if torch.rand(1).item() < 0.5:
+            mu = float(torch.empty(1).uniform_(-5.0, 5.0).item())
+            sigma = float(torch.empty(1).uniform_(0.1, 2.0).item())
+            return torch.normal(mu, sigma, shape, dtype=dtype)
+        else:
+            return torch.empty(shape, dtype=dtype).uniform_(-5.0, 5.0)
 
     input_groups = []
     for case in cases:
@@ -126,9 +186,10 @@ def get_input_groups():
         dtype = dtype_map[query_info["dtype"]]
         key_dtype = dtype_map.get(key_info.get("dtype", query_info["dtype"]), dtype)
 
-        query = torch.randn(query_info["shape"], dtype=dtype)
-        key = torch.randn(key_info["shape"], dtype=key_dtype)
-        value = torch.randn(value_info["shape"], dtype=key_dtype)
+        # 浮点 tensor 改用独立随机分布
+        query = random_tensor(query_info["shape"], dtype)
+        key = random_tensor(key_info["shape"], key_dtype)
+        value = random_tensor(value_info["shape"], key_dtype)
 
         pse_shift = None
         atten_mask = None
@@ -171,7 +232,7 @@ def get_input_groups():
         for inp in inputs[3:]:
             name = inp.get("name", "")
             if name == "pse_shift":
-                pse_shift = torch.randn(inp["shape"], dtype=dtype)
+                pse_shift = random_tensor(inp["shape"], dtype)
             elif name == "atten_mask":
                 atten_mask_dtype_map = {
                     "bool": torch.bool,
@@ -185,19 +246,19 @@ def get_input_groups():
             elif name == "actual_seq_lengths_kv":
                 actual_seq_lengths_kv = inp["value"]
             elif name == "dequant_scale1":
-                dequant_scale1 = torch.randn(inp["shape"], dtype=torch.float32)
+                dequant_scale1 = random_tensor(inp["shape"], torch.float32)
             elif name == "quant_scale1":
-                quant_scale1 = torch.randn(inp["shape"], dtype=torch.float32)
+                quant_scale1 = random_tensor(inp["shape"], torch.float32)
             elif name == "dequant_scale2":
-                dequant_scale2 = torch.randn(inp["shape"], dtype=torch.float32)
+                dequant_scale2 = random_tensor(inp["shape"], torch.float32)
             elif name == "quant_scale2":
-                quant_scale2 = torch.randn(inp["shape"], dtype=torch.float32)
+                quant_scale2 = random_tensor(inp["shape"], torch.float32)
             elif name == "quant_offset2":
-                quant_offset2 = torch.randn(inp["shape"], dtype=torch.float32)
+                quant_offset2 = random_tensor(inp["shape"], torch.float32)
             elif name == "antiquant_scale":
-                antiquant_scale = torch.randn(inp["shape"], dtype=dtype)
+                antiquant_scale = random_tensor(inp["shape"], dtype)
             elif name == "antiquant_offset":
-                antiquant_offset = torch.randn(inp["shape"], dtype=dtype)
+                antiquant_offset = random_tensor(inp["shape"], dtype)
             elif name == "block_table":
                 block_table = torch.tensor(inp["value"], dtype=torch.int32)
             elif name == "query_padding_size":
@@ -205,23 +266,25 @@ def get_input_groups():
             elif name == "kv_padding_size":
                 kv_padding_size = torch.tensor(inp["value"], dtype=torch.int64)
             elif name == "key_antiquant_scale":
-                key_antiquant_scale = torch.randn(inp["shape"], dtype=dtype)
+                key_antiquant_scale = random_tensor(inp["shape"], dtype)
             elif name == "key_antiquant_offset":
-                key_antiquant_offset = torch.randn(inp["shape"], dtype=dtype)
+                key_antiquant_offset = random_tensor(inp["shape"], dtype)
             elif name == "value_antiquant_scale":
-                value_antiquant_scale = torch.randn(inp["shape"], dtype=dtype)
+                value_antiquant_scale = random_tensor(inp["shape"], dtype)
             elif name == "value_antiquant_offset":
-                value_antiquant_offset = torch.randn(inp["shape"], dtype=dtype)
+                value_antiquant_offset = random_tensor(inp["shape"], dtype)
             elif name == "key_shared_prefix":
-                key_shared_prefix = torch.randn(inp["shape"], dtype=key_dtype)
+                key_shared_prefix = random_tensor(inp["shape"], key_dtype)
             elif name == "value_shared_prefix":
-                value_shared_prefix = torch.randn(inp["shape"], dtype=key_dtype)
+                value_shared_prefix = random_tensor(inp["shape"], key_dtype)
             elif name == "actual_shared_prefix_len":
                 actual_shared_prefix_len = inp["value"]
             elif name == "query_rope":
-                query_rope = torch.randn(inp["shape"], dtype=dtype)
+                query_rope = random_tensor(inp["shape"], dtype)
             elif name == "key_rope":
-                key_rope = torch.randn(inp["shape"], dtype=dtype)
+                key_rope = random_tensor(inp["shape"], dtype)
+            elif name == "key_rope_antiquant_scale":
+                key_rope_antiquant_scale = random_tensor(inp["shape"], dtype)
             elif name == "num_heads":
                 num_heads = inp["value"]
             elif name == "scale":
@@ -248,6 +311,19 @@ def get_input_groups():
                 key_antiquant_mode = inp["value"]
             elif name == "value_antiquant_mode":
                 value_antiquant_mode = inp["value"]
+
+        # ========== 新增：BSH layout GQA case 的 key/value shape 防御性调整 ==========
+        # NPU 算子要求 query_head_dim >= value_head_dim。
+        # BSH layout 下 head_dim = hidden_size // num_heads。
+        # 当 nkv < num_heads 时，若 key/value hidden_size 与 query 相同，则 value_head_dim > query_head_dim，导致报错。
+        if input_layout == "BSH" and 0 < num_key_value_heads < num_heads:
+            if query.shape[-1] % num_heads == 0:
+                head_dim = query.shape[-1] // num_heads
+                expected_kv_hidden = num_key_value_heads * head_dim
+                if key.shape[-1] != expected_kv_hidden:
+                    key = random_tensor(list(key.shape[:-1]) + [expected_kv_hidden], key_dtype)
+                if value.shape[-1] != expected_kv_hidden:
+                    value = random_tensor(list(value.shape[:-1]) + [expected_kv_hidden], key_dtype)
 
         input_groups.append([query, key, value,
                              pse_shift, atten_mask, actual_seq_lengths,
