@@ -1,7 +1,8 @@
 # 快速上手 · 从零部署到跑通
 
-> **一句话**：直接跑批跑脚本，自动完成 ① 批量生成算子 ② 采集轨迹 ③ 清洗成训练数据（端口自动探测，无需传参）。
-> 不想采集时加 `--no-trace`。
+> **一句话**：两种用法，配置同一套（key/上游/模型用你已有的，零新增）——
+> ① **批跑**：直接跑 `run_benchmark_ascendc.sh`，自动完成批量生成算子 + 采集轨迹 + 清洗成训练数据（端口自动探测，无需传参；不想采集加 `--no-trace`）；
+> ② **交互模式**：`trace_claude.sh` 一条命令启动带轨迹采集的交互式 claude，退出自动收摊（见下文专节）。
 
 ---
 
@@ -18,7 +19,8 @@ clone 下来后 `script/` 目录长这样：
 
 ```
 script/
-├── run_benchmark_ascendc.sh     ← 批跑入口（唯一入口，用户只跑这个）
+├── run_benchmark_ascendc.sh     ← 批跑入口（批量生成算子，默认采集+清洗）
+├── trace_claude.sh              ← 交互模式入口（单个 claude 窗口采集轨迹）
 └── proxy/                        ← 所有支撑脚本（不用手动跑）
     ├── trace_proxy.sh              proxy 启停（端口自动探测）
     ├── clean_pipeline.sh            一键清洗（shell 串联 5 步，不依赖 claude）
@@ -161,6 +163,30 @@ bash script/run_benchmark_ascendc.sh \
 
 ---
 
+## 交互模式：单独开 claude 窗口采集（可选）
+
+不跑批跑，只想在**交互式 claude** 里干活（如打磨单个算子）并记录轨迹：
+
+```bash
+bash script/trace_claude.sh
+```
+
+自动起 proxy → 进入正常交互 claude（和平时无差别）→ 退出时自动收摊并打印轨迹位置。claude 以 `IS_SANDBOX=1` + `--dangerously-skip-permissions` 启动，**免权限确认**（内部算子生成环境）。**配置与批跑同一套，零新增**；上游地址自动从环境变量 / 项目 `.claude/settings.*.json` / 全局 `~/.claude/settings.json` 取（优先级从高到低），key 和模型由 claude 自己带。
+
+| 变体 | 作用 |
+|------|------|
+| `--keep` | 退出 claude 后保留 proxy，继续看轨迹 UI（手动 `kill -- -<pgid>` 停） |
+| `-- -p "hi" --model glm-5.2` | `--` 之后的参数原样透传给 claude |
+| `--print-base-url` | 只打印将使用的上游地址（排查配置用） |
+| `ANTHROPIC_API_KEY=sk-x bash script/trace_claude.sh` | 换 key（同批跑姿势） |
+
+- 实时轨迹 UI：启动 banner 里的 `http://127.0.0.1:<port>/trace`；
+- 轨迹落 `cc_traces/session_<时间戳>/`（与批跑的 `batch_` 目录区分），**每个会话一个 `sess_<短id>.db`**（`/clear` 换新话题自动拆新库，`--continue` 恢复续写原库）；
+- 多窗口：每个窗口各跑一条命令即可（端口自动错开）；与批跑同时开互不影响；
+- 不采集就照旧直接敲 `claude`。
+
+---
+
 ## 第四步：看产出（3 类）
 
 ### ① 算子 kernel 代码 → `--output` 目录
@@ -252,7 +278,7 @@ bash script/proxy/clean_pipeline.sh \
 
 ## 附：冒烟测试
 
-跑 2 个小算子验证全流程：
+**批跑**：跑 2 个小算子验证全流程：
 
 ```bash
 bash script/run_benchmark_ascendc.sh \
@@ -262,3 +288,11 @@ bash script/run_benchmark_ascendc.sh \
 ```
 
 跑通后应该看到：算子目录 ✓ → 算子 db ✓ → `cleaned/pass/` 有合格样本 ✓。
+
+**交互模式**：一条命令快速验证（不进交互界面，`-p` 模式问一句就退）：
+
+```bash
+bash script/trace_claude.sh -- -p "回复:ok" --model <你的模型名>
+```
+
+跑通后应该看到：`[trace] proxy ready` + `[auth] mode=...` banner ✓ → claude 正常回复 ✓ → 退出后自动杀 proxy 并打印轨迹路径 ✓（该路径下 `trace.db` 存在）。

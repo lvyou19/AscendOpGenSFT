@@ -142,9 +142,10 @@ trace_proxy_start() {
         echo "[trace] 注入 PREFERRED_PROVIDER=anthropic（未检测到用户配置；批跑走采集透传路径）"
     fi
 
-    # --- 3. 生成唯一的 trace 目录（每次批跑独立子目录，避免覆盖）---
+    # --- 3. 生成唯一的 trace 目录（每次启动独立子目录，避免覆盖）---
+    # 前缀由调用方可通过 PROXY_TRACE_PREFIX 定制（批跑默认 batch，交互模式用 session）
     local timestamp=$(date +%Y%m%d_%H%M%S)
-    PROXY_TRACE_DIR="${proxy_dir}/cc_traces/batch_${timestamp}"
+    PROXY_TRACE_DIR="${proxy_dir}/cc_traces/${PROXY_TRACE_PREFIX:-batch}_${timestamp}"
     mkdir -p "$PROXY_TRACE_DIR"
     export CC_TRACE_DIR="$PROXY_TRACE_DIR"
     echo "[trace] trace 目录: $PROXY_TRACE_DIR"

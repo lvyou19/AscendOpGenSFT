@@ -44,6 +44,11 @@ DB_PATH = TRACE_DIR / "trace.db"
 TRACE_INCLUDE_SYSTEM = os.environ.get(
     "CC_TRACE_INCLUDE_SYSTEM_IN_PREFIX", "false"
 ).lower() in {"1", "true", "yes", "on"}
+# 交互模式按会话拆库：开启后无算子标记的会话写到 sess_<session_id 前 8 位>.db
+# （默认关——批跑目录的 fallback 会话保持落 trace.db，不被清洗流水线误当算子库）
+SESSION_SPLIT = os.environ.get(
+    "CC_SESSION_SPLIT", "false"
+).lower() in {"1", "true", "yes", "on"}
 
 _DB_LOCK = threading.Lock()
 _CONN_LOCAL = threading.local()
@@ -891,6 +896,11 @@ def record_request_started(
         op_key = _extract_op_key_from_body(body_clean)
         if op_key:
             set_session_op(session_id, op_key)
+        elif SESSION_SPLIT and not session_id.startswith("ext-"):
+            # 交互模式（CC_SESSION_SPLIT=1）：无算子标记的会话按 session 拆库，
+            # 映射到 sess_<短id>.db；ext- 派生会话（无 session 头的裸客户端）仍落 trace.db
+            short_id = re.sub(r"[^A-Za-z0-9._-]+", "-", session_id[:8]).strip("-") or "unknown"
+            set_session_op(session_id, f"sess_{short_id}")
 
     prefix_hashes: List[str] = []
     history_hash: Optional[str] = None
