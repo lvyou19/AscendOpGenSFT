@@ -19,6 +19,9 @@ OPS_DIR="${2:?缺少算子产出目录}"
 OUT_DIR="${3:?缺少输出目录}"
 
 JOBS="${CLEAN_JOBS:-4}"
+# 单算子评测超时（秒）。实测 clean build + 全量用例可达 ~600s（慢算子如 cholesky
+# 类 400-500s），300s 会把真通过的算子误判 TIMEOUT；默认 1800s，可按需用 CLEAN_TIMEOUT 覆盖。
+EVAL_TIMEOUT="${CLEAN_TIMEOUT:-1800}"
 WORK_DIR=$(mktemp -d
 )
 mkdir -p "$OUT_DIR/pass" "$OUT_DIR/fail"
@@ -48,7 +51,7 @@ echo "[clean] ② prepare...                ✅"
 # ── ③ batch_evaluate ──
 EVAL_NPU_LIST="${EVAL_NPU_LIST:-}" python3 "$CLEAN_SCRIPTS/batch_evaluate.py" \
     "$OPS_DIR" -o "$OUT_DIR/eval_report.json" \
-    -j "$JOBS" --timeout 300 >> "$OUT_DIR/clean.log" 2>&1
+    -j "$JOBS" --timeout "$EVAL_TIMEOUT" >> "$OUT_DIR/clean.log" 2>&1
 eval_summary=$(python3 -c "
 import json; d=json.load(open('$OUT_DIR/eval_report.json'))
 s=d.get('summary',d) if isinstance(d,dict) else {}
