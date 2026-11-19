@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 """批量跑算子精度测试：遍历算子目录，对每个调 evaluate_ascendc.sh。
 
-evaluate_ascendc.sh 不在本 skill 里——自动从 .claude/skills/*/scripts/ 下查找。
-查找顺序：
-  1. --eval-script 参数（显式指定路径）
-  2. 环境变量 EVAL_ASCENDC_SH
-  3. 从本脚本位置向上找 .claude/skills/ 目录，遍历所有 skill 的 scripts/ 找 evaluate_ascendc.sh
+精度验证脚本已内置在 clean/eval/ 下（evaluate_ascendc.sh + verification_ascendc.py
++ msprof_perf_summary.py），随本工具一起分发，无需再搜索外部 skill。
+
+查找顺序（只使用内置脚本，不做外部搜索）：
+  1. --eval-script 参数（显式指定路径，调试/临时覆盖）
+  2. 环境变量 EVAL_ASCENDC_SH（调试/临时覆盖）
+  3. 内置脚本 clean/eval/evaluate_ascendc.sh（默认）
 
 用法：
-    # 自动查找（最常见）
+    # 使用内置脚本（最常见）
     python3 batch_evaluate.py <ops_dir> -o eval_report.json
 
     # 显式指定 evaluate_ascendc.sh
     python3 batch_evaluate.py <ops_dir> \\
-        --eval-script /path/to/skills/ascendc-translator/scripts/evaluate_ascendc.sh \\
+        --eval-script /path/to/evaluate_ascendc.sh \\
         -o eval_report.json
 
 输出 JSON：
@@ -61,25 +63,13 @@ TOTAL_RE = re.compile(
 )
 
 
-def _search_skills_dir(skills_dir: Path) -> Optional[Path]:
-    """在指定的 .claude/skills/ 目录下搜索 evaluate_ascendc.sh。"""
-    if not skills_dir.is_dir():
-        return None
-    for skill_dir in sorted(skills_dir.iterdir()):
-        candidate = skill_dir / "scripts" / "evaluate_ascendc.sh"
-        if candidate.is_file():
-            return candidate.resolve()
-    return None
-
-
 def find_eval_script(explicit: Optional[str] = None) -> Optional[Path]:
-    """查找 evaluate_ascendc.sh。
+    """定位精度验证脚本。
 
-    优先级：
-      1. 显式参数 --eval-script
-      2. 环境变量 EVAL_ASCENDC_SH
-      3. 从本脚本位置向上逐级找 .claude/skills/（不再找到第一个就停）
-      4. 全局 ~/.claude/skills/（兜底）
+    只使用内置脚本，不做任何外部搜索：
+      1. 显式参数 --eval-script（调试/临时覆盖）
+      2. 环境变量 EVAL_ASCENDC_SH（调试/临时覆盖）
+      3. 内置脚本 clean/eval/evaluate_ascendc.sh（默认，随工具分发）
     """
     # 1. 显式参数
     if explicit:
@@ -96,19 +86,22 @@ def find_eval_script(explicit: Optional[str] = None) -> Optional[Path]:
             return p
         print(f"[warn] EVAL_ASCENDC_SH 环境变量路径不存在: {p}", file=sys.stderr)
 
-    # 3. 从本脚本位置向上逐级搜索 .claude/skills/
-    this = Path(__file__).resolve()
-    for parent in [this.parent] + list(this.parents):
-        result = _search_skills_dir(parent / ".claude" / "skills")
-        if result:
-            return result
-
-    # 4. 全局 ~/.claude/skills/（兜底）
-    result = _search_skills_dir(Path.home() / ".claude" / "skills")
-    if result:
-        return result
+    # 3. 内置脚本（默认唯一来源）
+    bundled = Path(__file__).resolve().parent / "eval" / "evaluate_ascendc.sh"
+    if bundled.is_file():
+        return bundled.resolve()
 
     return None
+
+
+def find_shared_python_paths(scripts_dir: Path) -> list:
+    """verification_ascendc.py 的依赖（msprof_perf_summary.py）与它同目录。
+
+    内置 eval/ 布局下无需任何搜索；返回空列表时由调用方告警。
+    """
+    if (scripts_dir / "msprof_perf_summary.py").is_file():
+        return [str(scripts_dir.resolve())]
+    return []
 
 
 def _find_impl_file(op_dir: Path) -> Optional[Path]:
@@ -152,7 +145,8 @@ def check_impl_regression(op_dir: Path) -> Dict[str, Any]:
             "suggestion": result.get("suggestion", "")}
 
 
-def run_one(op_dir: Path, eval_script: Path, scripts_dir: Path, timeout: int, npu_id: str = None) -> Dict[str, Any]:
+def run_one(op_dir: Path, eval_script: Path, scripts_dir: Path, timeout: int, npu_id: str = None,
+            extra_python_paths: Optional[list] = None) -> Dict[str, Any]:
     """跑单个算子的 evaluate_ascendc.sh。用临时 WORKDIR 不污染算子根。"""
     # 实现退化检测先行（静态、毫秒级）；无 kernel/ 目录的算子照旧直接 NO_TEST
     impl_regression = check_impl_regression(op_dir) if (op_dir / "kernel").is_dir() else {
@@ -170,20 +164,15 @@ def run_one(op_dir: Path, eval_script: Path, scripts_dir: Path, timeout: int, np
 
     start = time.time()
     env = os.environ.copy()
+    if extra_python_paths:
+        parts = [str(p) for p in extra_python_paths]
+        if env.get("PYTHONPATH"):
+            parts.append(env["PYTHONPATH"])
+        env["PYTHONPATH"] = os.pathsep.join(parts)
     try:
         with tempfile.TemporaryDirectory(prefix="batch_eval_wd_") as wd:
             workdir = Path(wd)
-            # evaluate_ascendc.sh 内部硬编码找 WORKDIR/.claude/skills/<skill-name>/scripts/verification_ascendc.py
-            # skill-name 可能是 "tilelang2ascend-translator" 或 "ascendc-translator" 等
-            # 创建两个常见名字的软链接，指向找到 evaluate_ascendc.sh 的 scripts/ 目录
-            for skill_name in ("tilelang2ascend-translator", "ascendc-translator"):
-                link_dir = workdir / ".claude" / "skills" / skill_name / "scripts"
-                link_dir.parent.mkdir(parents=True, exist_ok=True)
-                if not link_dir.exists():
-                    try:
-                        link_dir.symlink_to(scripts_dir.resolve())
-                    except OSError:
-                        pass
+            # 临时 WORKDIR 仅用于隔离运行目录；内置脚本不依赖任何外部布局。
             env["WORKDIR"] = str(workdir)
             env.setdefault("ASCENDC_SOC_VERSION", "Ascend910B3")
             if npu_id:
@@ -247,13 +236,13 @@ def main() -> int:
     ap.add_argument("ops_dir", help="算子输出根目录（含 <num>_<OpName>/ 子目录）")
     ap.add_argument("-o", "--output", required=True, help="输出 JSON 报告路径")
     ap.add_argument("-j", "--jobs", type=int, default=4, help="并发数（默认 4）")
-    ap.add_argument("--timeout", type=int, default=300,
-                    help="单算子超时秒数（默认 300）")
+    ap.add_argument("--timeout", type=int, default=1800,
+                    help="单算子超时秒数（默认 1800；clean build + 全量用例实测可达 ~600s）")
     ap.add_argument("--filter", action="append", default=[],
                     help="只跑目录名含该子串的算子，可重复")
     ap.add_argument("--eval-script", metavar="PATH",
                     help="显式指定 evaluate_ascendc.sh 路径"
-                         "（默认自动从 .claude/skills/*/scripts/ 查找）")
+                         "（默认使用内置 clean/eval/evaluate_ascendc.sh）")
     ap.add_argument("--npu-list", default=None,
                     help="NPU 卡列表，逗号分隔（如 4,5,6,7），按轮询分配给并发任务")
     args = ap.parse_args()
@@ -272,9 +261,9 @@ def main() -> int:
     eval_script = find_eval_script(args.eval_script)
     if not eval_script:
         print("[err] 找不到 evaluate_ascendc.sh。", file=sys.stderr)
-        print("      方法 1: --eval-script /path/to/evaluate_ascendc.sh", file=sys.stderr)
-        print("      方法 2: export EVAL_ASCENDC_SH=/path/to/evaluate_ascendc.sh", file=sys.stderr)
-        print("      方法 3: 把含 evaluate_ascendc.sh 的 skill 放到 .claude/skills/ 下", file=sys.stderr)
+        print("      方法 1: 确认内置脚本存在: proxy/clean/eval/evaluate_ascendc.sh", file=sys.stderr)
+        print("      方法 2: --eval-script /path/to/evaluate_ascendc.sh", file=sys.stderr)
+        print("      方法 3: export EVAL_ASCENDC_SH=/path/to/evaluate_ascendc.sh", file=sys.stderr)
         return 2
 
     scripts_dir = eval_script.parent  # 含 verification_ascendc.py 等依赖的目录
@@ -285,6 +274,16 @@ def main() -> int:
 
     print(f"[eval] evaluate_ascendc.sh: {eval_script}")
     print(f"[eval] verification_ascendc.py: {verif_py}")
+
+    # verification_ascendc.py 依赖 ops-profiling 的 msprof_perf_summary；
+    # 其内部相对路径在当前部署结构（vendor/cannbot-skills/community/ops）下会
+    # 落空，导致所有算子 import 崩溃 —— 这里自动注入 PYTHONPATH。
+    extra_python_paths = find_shared_python_paths(scripts_dir)
+    if extra_python_paths:
+        print(f"[eval] extra PYTHONPATH: {':'.join(extra_python_paths)}")
+    else:
+        print("[warn] 未找到 ops-profiling/scripts（msprof_perf_summary），"
+              "verification_ascendc.py 可能 import 失败", file=sys.stderr)
 
     ops_root = Path(args.ops_dir)
     if not ops_root.is_dir():
@@ -311,7 +310,8 @@ def main() -> int:
         future_to_op = {}
         for i, d in enumerate(op_dirs):
             npu_id = npu_list[i % len(npu_list)] if npu_list else None
-            future_to_op[pool.submit(run_one, d, eval_script, scripts_dir, args.timeout, npu_id)] = d.name
+            future_to_op[pool.submit(run_one, d, eval_script, scripts_dir, args.timeout,
+                                     npu_id, extra_python_paths)] = d.name
         for i, fut in enumerate(as_completed(future_to_op), 1):
             op_name = future_to_op[fut]
             try:

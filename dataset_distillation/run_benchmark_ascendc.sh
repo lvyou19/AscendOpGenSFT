@@ -40,9 +40,10 @@ NPU_ID=0
 NPU_LIST=""
 OUTPUT_DIR=""
 
-# ── proxy 相关（--proxy-port 触发）──
+# ── 轨迹采集相关（默认启用）──
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROXY_PORT=""   # 空 = 不启用 proxy；用户传 --proxy-port=N 触发
+TRACE_ENABLED=true   # 默认启用采集+清洗；--no-trace 关闭
+PROXY_PORT=""        # --proxy-port=N 固定端口；空 = 自动探测空闲端口
 
 # ── 参数解析 ──
 while [[ $# -gt 0 ]]; do
@@ -79,6 +80,10 @@ while [[ $# -gt 0 ]]; do
             PROXY_PORT="${1#*=}"
             shift
             ;;
+        --no-trace)
+            TRACE_ENABLED=false
+            shift
+            ;;
         -h | --help)
             echo "用法: bash .claude/skills/tilelang2ascend-performance-analyzer/script/run_benchmark_ascendc.sh --benchmark-dir <path> --level <N> [--range <start-end> | --ids <id_list>] [--npu <id> | --npu-list <list>] --output <path>"
             echo ""
@@ -90,7 +95,8 @@ while [[ $# -gt 0 ]]; do
             echo "  --npu            单 NPU 设备 ID，如 0 (默认 0，与 --npu-list 互斥)"
             echo "  --npu-list       多 NPU 列表，逗号分隔，如 0,1,2,3,4,5 (与 --npu 互斥，优先级更高)"
             echo "  --output         输出目录 (必填)"
-            echo "  --proxy-port=N   启用 trace proxy 并指定端口（如 8799）；不传则不起 proxy"
+            echo "  --no-trace       禁用轨迹采集（不起 proxy、不清洗，等价旧版无参行为；默认启用）"
+            echo "  --proxy-port=N   固定 trace proxy 端口为 N（默认：自动探测空闲端口）"
             echo ""
             echo "示例:"
             echo "  # 单 NPU 串行模式"
@@ -125,6 +131,11 @@ fi
 
 if [[ -z "$OUTPUT_DIR" ]]; then
     echo "错误: 必须指定 --output"
+    exit 1
+fi
+
+if [[ "$TRACE_ENABLED" == false && -n "$PROXY_PORT" ]]; then
+    echo "错误: --no-trace 与 --proxy-port 互斥"
     exit 1
 fi
 
@@ -208,15 +219,20 @@ TOTAL=${#OP_FILES[@]}
 SUCCESS=0
 FAIL=0
 
-# ── trace proxy 启停（--proxy-port 触发）──
+# ── trace proxy 启停（默认启用；--no-trace 关闭）──
 source "${SCRIPT_DIR}/proxy/trace_proxy.sh"
-if [[ -n "${PROXY_PORT:-}" ]]; then
+CLAUDE_SETTINGS_ARGS=()
+if [[ "$TRACE_ENABLED" == true ]]; then
     trap trace_proxy_stop EXIT INT TERM
     if ! trace_proxy_start "$PROXY_PORT"; then
         echo "错误：trace proxy 启动失败，退出" >&2
         exit 1
     fi
-    PROXY_SETTINGS="{\"env\":{\"ANTHROPIC_BASE_URL\":\"http://127.0.0.1:${PROXY_PORT}\"}}"
+    PROXY_PORT="${PROXY_PORT_RESOLVED}"
+    echo "[trace] 本次采集端口: ${PROXY_PORT}"
+    # 只注入 BASE_URL；token 不动（留在用户 settings.json / shell 环境里，
+    # 由 proxy 认证透传直达上游；--no-trace 时数组为空，不传 --settings）
+    CLAUDE_SETTINGS_ARGS=(--settings "{\"env\":{\"ANTHROPIC_BASE_URL\":\"http://127.0.0.1:${PROXY_PORT}\"}}")
 fi
 
 # ── 执行模式选择 ──
@@ -264,7 +280,7 @@ if [[ "$USE_PARALLEL" == true ]]; then
                     PROMPT="使用当前agent生成ascendC算子，npu=${npu}，算子描述文件为 ${file}，输出到 ${TARGET_OP_DIR}/，重要约束：必须在当前会话中前台阻塞完成整个流程，不得将 ascend-kernel-developer 放入后台运行；必须产出 ${TARGET_OP_DIR}/trace.md 和 ${TARGET_OP_DIR}/performance.json ，才会话结束。"
 
                     if claude -p "$PROMPT" \
-                        --settings "$PROXY_SETTINGS" \
+                        ${CLAUDE_SETTINGS_ARGS[@]+"${CLAUDE_SETTINGS_ARGS[@]}"} \
                         --allowedTools 'Bash(*)' 'Read(*)' 'Write(*)' 'Edit(*)' 'Glob(*)' 'Grep(*)' 'Skill(*)' \
                         >> "${OUTPUT_DIR}/npu_${npu}.log" 2>&1; then
 
@@ -363,7 +379,7 @@ else
         PROMPT="使用当前agent生成ascendC算子，npu=${NPU_ID}，算子描述文件为 ${file}，输出到 ${TARGET_OP_DIR}/，重要约束：必须在当前会话中前台阻塞完成整个流程，不得将 ascend-kernel-developer 放入后台运行；必须产出 ${TARGET_OP_DIR}/trace.md 和 ${TARGET_OP_DIR}/performance.json ，才会话结束。"
 
         if claude -p "$PROMPT" \
-            --settings "$PROXY_SETTINGS" \
+            ${CLAUDE_SETTINGS_ARGS[@]+"${CLAUDE_SETTINGS_ARGS[@]}"} \
             --allowedTools 'Bash(*)' 'Read(*)' 'Write(*)' 'Edit(*)' 'Glob(*)' 'Grep(*)' 'Skill(*)'; then
             END_TIME=$(date +%s)
             ELAPSED=$((END_TIME - START_TIME))
@@ -423,9 +439,15 @@ echo "================================================================"
 # ==================================================================
 # 触发 training-data-clean skill 清洗 trace → SFT 训练数据
 # ==================================================================
-if [[ -n "${PROXY_PORT:-}" ]]; then
+if [[ "$TRACE_ENABLED" == true ]]; then
+    # 空轨迹防呆：claude 全程没走 proxy 时（如 settings.json 硬编码 BASE_URL 压过注入值），及时暴露
+    op_db_count=$(ls "${PROXY_TRACE_DIR}"/*.db 2>/dev/null | grep -v "trace.db" | wc -l)
+    if [[ "$op_db_count" -eq 0 ]]; then
+        echo "[$(date +%H:%M:%S)] ⚠️ 警告：未采集到任何算子轨迹（${PROXY_TRACE_DIR} 下无算子 db）" >&2
+        echo "           可能原因：claude 未走 proxy（检查 settings.json 是否硬编码了 ANTHROPIC_BASE_URL）" >&2
+    fi
     export EVAL_NPU_LIST="${NPU_LIST:-$NPU_ID}"
-    echo "[$(date +%H:%M:%S)] 清洗使用 NPU: $NPU_LIST" >&2
+    echo "[$(date +%H:%M:%S)] 清洗使用 NPU: ${NPU_LIST:-$NPU_ID}" >&2
     echo ""
     echo "================================================================"
     echo "触发数据清洗流水线 ..."

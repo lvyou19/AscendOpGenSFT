@@ -150,6 +150,42 @@ PREFERRED_PROVIDER = os.environ.get("PREFERRED_PROVIDER", "openai").lower()
 BIG_MODEL = os.environ.get("BIG_MODEL", "gpt-4.1")
 SMALL_MODEL = os.environ.get("SMALL_MODEL", "gpt-4.1-mini")
 
+# ── passthrough 认证模式 ──
+# override     = 原网关设计：剥掉客户端认证头，用本进程的 ANTHROPIC_API_KEY 覆盖
+# passthrough  = 采集模式：客户端（claude）自带的 authorization / x-api-key 原样转发上游
+# 决策：CC_AUTH_MODE 显式指定；未设时按有效 ANTHROPIC_API_KEY（进程 env 优先于 .env）
+#               有无自动选择
+_RAW_AUTH_MODE = os.environ.get("CC_AUTH_MODE", "").strip().lower()
+if _RAW_AUTH_MODE in {"override", "passthrough"}:
+    CC_AUTH_MODE = _RAW_AUTH_MODE
+    CC_AUTH_MODE_SOURCE = "explicit CC_AUTH_MODE"
+elif _RAW_AUTH_MODE:
+    print(f"[auth] 警告: CC_AUTH_MODE='{_RAW_AUTH_MODE}' 无效（可选 override|passthrough），回退自动探测", flush=True)
+    CC_AUTH_MODE = "override" if ANTHROPIC_API_KEY else "passthrough"
+    CC_AUTH_MODE_SOURCE = "auto（无效值回退）"
+else:
+    CC_AUTH_MODE = "override" if ANTHROPIC_API_KEY else "passthrough"
+    CC_AUTH_MODE_SOURCE = f"auto: ANTHROPIC_API_KEY {'有值' if ANTHROPIC_API_KEY else '无值'}"
+
+if CC_AUTH_MODE == "override" and not ANTHROPIC_API_KEY:
+    raise RuntimeError(
+        "CC_AUTH_MODE=override 但未配置 ANTHROPIC_API_KEY（进程环境或 .env）；"
+        "请配置 key，或删除/改写 CC_AUTH_MODE 走 passthrough"
+    )
+if CC_AUTH_MODE == "passthrough" and PREFERRED_PROVIDER != "anthropic":
+    raise RuntimeError(
+        f"passthrough 认证模式要求 PREFERRED_PROVIDER=anthropic（当前 {PREFERRED_PROVIDER}）；"
+        f"否则请求走 litellm 转换路径，客户端认证头不会被透传。"
+        f"修复：export PREFERRED_PROVIDER=anthropic（批跑脚本会自动注入），"
+        f"或配置 ANTHROPIC_API_KEY 走 override 模式"
+    )
+if PREFERRED_PROVIDER != "anthropic" and CC_AUTH_MODE != "override":
+    print(f"[auth] 提示: PREFERRED_PROVIDER={PREFERRED_PROVIDER}，请求走 litellm 路径，"
+          f"认证模式（{CC_AUTH_MODE}）不生效", flush=True)
+
+print(f"[auth] mode={CC_AUTH_MODE} ({CC_AUTH_MODE_SOURCE}) | upstream={ANTHROPIC_BASE_URL} "
+      f"| provider={PREFERRED_PROVIDER} | big={BIG_MODEL} small={SMALL_MODEL}", flush=True)
+
 # Get default model context limits from environment (optional overrides)
 DEFAULT_MAX_INPUT_TOKENS = os.environ.get("DEFAULT_MAX_INPUT_TOKENS")
 DEFAULT_MAX_OUTPUT_TOKENS = os.environ.get("DEFAULT_MAX_OUTPUT_TOKENS")
@@ -1709,7 +1745,9 @@ async def create_message(
         raise HTTPException(status_code=status_code, detail=error_message)
 
 
-# Headers we never want to forward to the upstream Anthropic API.
+# Headers we never want to forward to the upstream Anthropic API
+# (hop-by-hop / proxy-injected). anthropic-version is dropped here too but
+# deterministically rebuilt below, so behaviour is unchanged.
 _ANTHROPIC_PASSTHROUGH_DROP_HEADERS = {
     "host",
     "content-length",
@@ -1720,18 +1758,28 @@ _ANTHROPIC_PASSTHROUGH_DROP_HEADERS = {
     "x-forwarded-host",
     "x-forwarded-proto",
     "x-real-ip",
-    "x-api-key",
-    "authorization",
     "anthropic-version",
 }
 
+# Auth headers: dropped only in override mode; forwarded as-is in
+# passthrough mode (see CC_AUTH_MODE at the top of this file).
+_ANTHROPIC_AUTH_HEADERS = {"x-api-key", "authorization"}
+
 
 def _build_anthropic_passthrough_headers(raw_request: Request) -> Dict[str, str]:
-    """Build headers for the upstream call. Forward client headers but
-    override auth/version/host so the proxy authenticates as itself."""
+    """Build headers for the upstream call.
+
+    override mode: strip client auth, authenticate as the proxy
+    (ANTHROPIC_API_KEY from env/.env).
+    passthrough mode: forward the client's authorization / x-api-key
+    untouched so claude's own credentials reach the upstream.
+    """
     forwarded: Dict[str, str] = {}
     for k, v in raw_request.headers.items():
-        if k.lower() in _ANTHROPIC_PASSTHROUGH_DROP_HEADERS:
+        kl = k.lower()
+        if kl in _ANTHROPIC_PASSTHROUGH_DROP_HEADERS:
+            continue
+        if CC_AUTH_MODE == "override" and kl in _ANTHROPIC_AUTH_HEADERS:
             continue
         forwarded[k] = v
 
@@ -1740,8 +1788,13 @@ def _build_anthropic_passthrough_headers(raw_request: Request) -> Dict[str, str]
     forwarded["anthropic-version"] = raw_request.headers.get(
         "anthropic-version", "2023-06-01"
     )
-    if ANTHROPIC_API_KEY:
-        forwarded["x-api-key"] = ANTHROPIC_API_KEY
+    if CC_AUTH_MODE == "override":
+        if ANTHROPIC_API_KEY:
+            forwarded["x-api-key"] = ANTHROPIC_API_KEY
+    elif not any(h in forwarded for h in _ANTHROPIC_AUTH_HEADERS):
+        logger.warning(
+            "passthrough: 客户端未携带 authorization/x-api-key，上游大概率 401"
+        )
     return forwarded
 
 

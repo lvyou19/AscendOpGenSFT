@@ -1,7 +1,8 @@
 # 快速上手 · 从零部署到跑通
 
-> **一句话**：加 `--proxy-port=8799` 参数跑批跑脚本，自动完成 ① 批量生成算子 ② 采集轨迹 ③ 清洗成训练数据。
-> 不加这个参数 = 普通批跑（不采集轨迹）。
+> **一句话**：两种用法，配置同一套（key/上游/模型用你已有的，零新增）——
+> ① **批跑**：直接跑 `run_benchmark_ascendc.sh`，自动完成批量生成算子 + 采集轨迹 + 清洗成训练数据（端口自动探测，无需传参；不想采集加 `--no-trace`）；
+> ② **交互模式**：`trace_claude.sh` 一条命令启动带轨迹采集的交互式 claude，退出自动收摊（见下文专节）。
 
 ---
 
@@ -18,61 +19,92 @@ clone 下来后 `script/` 目录长这样：
 
 ```
 script/
-├── run_benchmark_ascendc.sh     ← 批跑入口（唯一入口，用户只跑这个）
+├── run_benchmark_ascendc.sh     ← 批跑入口（批量生成算子，默认采集+清洗）
+├── trace_claude.sh              ← 交互模式入口（单个 claude 窗口采集轨迹）
 └── proxy/                        ← 所有支撑脚本（不用手动跑）
-    ├── trace_proxy.sh              proxy 启停（含 disown 修复）
+    ├── trace_proxy.sh              proxy 启停（端口自动探测）
     ├── clean_pipeline.sh            一键清洗（shell 串联 5 步，不依赖 claude）
-    ├── clean/                       4 个清洗 python 脚本
+    ├── clean/                       清洗脚本（含内置精度验证）
     │   ├── export_training.py
     │   ├── prepare_for_training.py
     │   ├── batch_evaluate.py
-    │   └── check_dataset.py
+    │   ├── check_dataset.py
+    │   └── eval/                    内置精度验证（无需外部 skill）
+    │       ├── evaluate_ascendc.sh
+    │       ├── verification_ascendc.py
+    │       └── msprof_perf_summary.py
     └── claude-code-proxy/           proxy 程序
         ├── server.py                   FastAPI 主程序
         ├── trace_db.py                 实时分库引擎
-        ├── .env.example                配置模板
+        ├── .env.example                配置模板（仅覆盖模式需要）
         └── static/trace.html           轨迹查看页
 ```
 
 ---
 
-## 第二步：配置（首次一次性改完）
+## 第二步：配置（按方式 A / B 二选一）
 
-### 配置 1：proxy 的 `.env`
+### 方式 A · 声明环境变量（推荐）
+
+声明三个环境变量就行了（就是你平时跑 claude 的那套配置，通常已经配好）：
+
+```bash
+export ANTHROPIC_API_KEY=sk-xxx           # ① key
+export ANTHROPIC_BASE_URL=https://...     # ② 上游地址
+export ANTHROPIC_MODEL=glm-5.2            # ③ 模型名
+```
+
+- proxy `.env` 不需要创建；环境变量优先于 `.env` 同名项；
+- key 配一处即可：批跑/换 key 用环境变量 `ANTHROPIC_API_KEY`；已配在 claude `settings.json` 里的 token 变量名是 `ANTHROPIC_AUTH_TOKEN`（配了它就什么都不用 export，proxy 自动透传）；
+- 换 key 就重新声明 `ANTHROPIC_API_KEY`；多窗口各声明各的 key，天然隔离，不用改任何共享文件；
+- **注意**：模型名必须是具体名字（如 `glm-5.2`），不要用 `claude-*`/sonnet/haiku 类名——那类名会被 proxy 按 `BIG_MODEL` 映射重写（默认 gpt-4.1，发到上游就错了）；想用 claude 系名可同时设 `BIG_MODEL`/`SMALL_MODEL` 指到真实模型名。
+
+### 方式 B · 覆盖模式（原方式）
+
+在 proxy 侧集中配 key，转发时替换客户端认证（适合"key 统一放服务端管理"的用法）：
 
 ```bash
 cd script/proxy/claude-code-proxy/
 cp .env.example .env
 ```
 
-编辑 `.env`，填你的真实上游和 key：
+编辑 `.env`（示例：Kimi 上游；**只有 `ANTHROPIC_API_KEY` 必填**，其余按需）：
 
 ```bash
-ANTHROPIC_BASE_URL="https://api.deepseek.com"   # 你的真实 LLM 上游
-ANTHROPIC_API_KEY="sk-xxx"                       # 你的真实 key
-PREFERRED_PROVIDER="anthropic"                   # 透传模式（不改写请求）
+ANTHROPIC_API_KEY="sk-xxx"                        # ⭐ 必填：proxy 统一使用的 key（方式 B 的定义）
+ANTHROPIC_BASE_URL="https://api.kimi.com/coding/" # 上游；默认官方 api，shell 已 export 同名变量时可省
+PREFERRED_PROVIDER="anthropic"                    # 可省：批跑脚本未检测到配置时自动注入 anthropic
+BIG_MODEL="k3"                                    # 可省：仅当 claude 用 claude 系模型名（如 claude-sonnet-*）
+SMALL_MODEL="k3"                                  #       时才需要映射到真实模型；具体模型名则原样透传
 ```
 
-### 配置 2：claude 的 `settings.json`
+> **同名环境变量优先于 `.env`**。`.env` 配好后，临时换 key / 多窗口分 key 不用再改文件：
+>
+> ```bash
+> ANTHROPIC_API_KEY=sk-窗口2的key bash script/run_benchmark_ascendc.sh ...
+> ```
+>
+> 只覆盖你 export 的那一项，`.env` 其余配置（上游、模型映射等）继续生效。
 
-批跑脚本已自动通过 `--settings` 参数注入 proxy 地址，**不需要在 settings.json 中配 `ANTHROPIC_BASE_URL`**。只保留模型和其他配置即可：
+### 两种模式怎么判定
 
-```json
-{
-  "env": {
-    "ANTHROPIC_MODEL": "glm-5.2",
-    "ANTHROPIC_AUTH_TOKEN": "sk-1234"
-  }
-}
-```
+启动时 proxy 会打印一行 banner（如 `[auth] mode=passthrough (auto: ...) | upstream=...`）：
 
-> `ANTHROPIC_BASE_URL` 由脚本自动设为 `http://127.0.0.1:<proxy-port>`，无需手写。
+| 场景 | 生效模式 |
+|------|----------|
+| 配了 `ANTHROPIC_API_KEY`（环境变量或 .env，环境变量优先） | override（覆盖，=原方式） |
+| 没配 `ANTHROPIC_API_KEY` | passthrough（透传 claude settings.json 里 `ANTHROPIC_AUTH_TOKEN` 的认证） |
+| 想强制指定 | `export CC_AUTH_MODE=override` 或 `passthrough` |
 
-### 配置 3：CANN 环境
+### 其他配置
+
+CANN 环境：
 
 ```bash
 source /usr/local/Ascend/ascend-toolkit/latest/set_env.sh
 ```
+
+claude 的 `settings.json` 不需要配 `ANTHROPIC_BASE_URL`（批跑脚本自动注入 proxy 地址，跑完即恢复直连）。
 
 ---
 
@@ -86,8 +118,7 @@ bash script/run_benchmark_ascendc.sh \
     --level 1 \
     --ids "3,4" \
     --npu-list "4,5" \
-    --output ./output/level_1 \
-    --proxy-port=8799
+    --output ./output/level_1
 ```
 
 **参数说明**：
@@ -99,42 +130,64 @@ bash script/run_benchmark_ascendc.sh \
 | `--ids "3,4"` 或 `--range 1-30` | ✅ | 哪些算子 |
 | `--npu-list "4,5"` 或 `--npu 0` | ✅ | 哪些卡（多卡并行 / 单卡） |
 | `--output` | ✅ | 算子产出放哪 |
-| `--proxy-port=8799` | ⭐ | **加了 = 启用轨迹采集 + 自动清洗；不加 = 普通批跑** |
+| `--no-trace` | | 禁用轨迹采集（不起 proxy、不清洗，等价旧版无参行为；**默认启用**） |
+| `--proxy-port=N` | | 固定 proxy 端口为 N（默认：自动探测空闲端口，多窗口无需错开） |
 
 ---
 
 ## 多窗口并行（多个 API Key）
 
-当算子量大、一个 key 不够用时，开多个窗口，每个窗口用自己的 key 和模型跑一部分算子：
+当算子量大、一个 key 不够用时，开多个窗口各跑一部分算子——典型场景是**同一上游/模型、多个 key 分摊**（也可以每窗口不同上游）。**端口自动错开，key 各自隔离，无需改任何共享文件**：
 
 **窗口 1**（Kimi key）：
 ```bash
-cd ascendc-kernelgen-data
+export ANTHROPIC_API_KEY=sk-kimi
+export ANTHROPIC_BASE_URL=https://api.moonshot.cn/anthropic
 bash script/run_benchmark_ascendc.sh \
     --benchmark-dir /path/to/NPUKernelBench \
     --level 1 --ids "1-30" --npu-list "0,1,2,3" \
-    --output ./output/level_1 \
-    --proxy-port=8799
+    --output ./output/level_1
 ```
 
 **窗口 2**（GLM key）：
 ```bash
-cd ascendc-kernelgen-data
-# 修改 script/proxy/claude-code-proxy/.env 中的 key 和 ANTHROPIC_BASE_URL
-# 然后：
+export ANTHROPIC_API_KEY=sk-glm
+export ANTHROPIC_BASE_URL=https://open.bigmodel.cn/api/anthropic
 bash script/run_benchmark_ascendc.sh \
     --benchmark-dir /path/to/NPUKernelBench \
     --level 1 --ids "31-60" --npu-list "4,5,6,7" \
-    --output ./output/level_1 \
-    --proxy-port=8800
+    --output ./output/level_1
 ```
 
 **关键点**：
-- 每个窗口 `--proxy-port` 必须不同（如 8799、8800、8801）
-- 起批跑前先改 proxy `.env` 里的 key，改完再起（已跑的 proxy 不受影响）
-- 算子 id 不能重叠（窗口1 跑 1-30，窗口2 跑 31-60）
+- 每个窗口 export 自己的 key/上游即可，互不干扰（透传模式下 key 跟着各自进程走）
+- 算子 id 不要重叠（窗口1 跑 1-30，窗口2 跑 31-60）
 - `--output` 同目录或不同目录都行；同目录算子自动合并，不同目录各自独立
-- 脚本自动通过 `--settings` 注入对应端口，无需手动改 settings.json
+- 旧用法仍兼容：想固定端口传 `--proxy-port=8799`（占用即报错，不自动跳换）；想用共享 .env 的 key 走方式 B
+
+---
+
+## 交互模式：单独开 claude 窗口采集（可选）
+
+不跑批跑，只想在**交互式 claude** 里干活（如打磨单个算子）并记录轨迹：
+
+```bash
+bash script/trace_claude.sh
+```
+
+自动起 proxy → 进入正常交互 claude（和平时无差别）→ 退出时自动收摊并打印轨迹位置。claude 以 `IS_SANDBOX=1` + `--dangerously-skip-permissions` 启动，**免权限确认**（内部算子生成环境）。**配置与批跑同一套，零新增**；上游地址自动从环境变量 / 项目 `.claude/settings.*.json` / 全局 `~/.claude/settings.json` 取（优先级从高到低），key 和模型由 claude 自己带。
+
+| 变体 | 作用 |
+|------|------|
+| `--keep` | 退出 claude 后保留 proxy，继续看轨迹 UI（手动 `kill -- -<pgid>` 停） |
+| `-- -p "hi" --model glm-5.2` | `--` 之后的参数原样透传给 claude |
+| `--print-base-url` | 只打印将使用的上游地址（排查配置用） |
+| `ANTHROPIC_API_KEY=sk-x bash script/trace_claude.sh` | 换 key（同批跑姿势） |
+
+- 实时轨迹 UI：启动 banner 里的 `http://127.0.0.1:<port>/trace`；
+- 轨迹落 `cc_traces/session_<时间戳>/`（与批跑的 `batch_` 目录区分），**每个会话一个 `sess_<短id>.db`**（`/clear` 换新话题自动拆新库，`--continue` 恢复续写原库）；
+- 多窗口：每个窗口各跑一条命令即可（端口自动错开）；与批跑同时开互不影响；
+- 不采集就照旧直接敲 `claude`。
 
 ---
 
@@ -178,7 +231,9 @@ script/proxy/claude-code-proxy/cc_traces/batch_20260721_145351/cleaned/
 ## 跑通后的终端输出
 
 ```
-[trace] proxy ready (port=8799)
+[trace] proxy ready (port=51923)
+[auth] mode=passthrough (auto: ANTHROPIC_API_KEY 无值) | upstream=https://... | provider=anthropic | ...
+[trace] 本次采集端口: 51923
 [14:53:54] 所有 worker 已启动，准备 wait
 [15:35:07] [NPU 12] ✅ 算子 4: 4_Abs.py 完成 (2473s)
 [15:43:47] [NPU 11] ✅ 算子 3: 3_Add.py 完成 (2993s)
@@ -201,11 +256,17 @@ script/proxy/claude-code-proxy/cc_traces/batch_20260721_145351/cleaned/
 
 | 问题 | 原因 | 解决 |
 |------|------|------|
-| `proxy 启动失败` | uvicorn 没装或 .env 没配 | `pip install uvicorn fastapi litellm` + 检查 `.env` |
-| 端口占用 | 8799 被占 | 换端口：`--proxy-port=8800` |
+| `proxy 启动失败` | uvicorn 没装 | `pip install uvicorn fastapi litellm` |
+| `[auth] mode=...` 怎么读 | banner 显示实际生效的认证模式/上游/模型映射 | `override`=用 proxy key；`passthrough`=透传你的 token |
+| 上游 401 | 哪都没配 key（环境变量/`.env` 无 `ANTHROPIC_API_KEY`，settings.json 也没配 `ANTHROPIC_AUTH_TOKEN`） | `export ANTHROPIC_API_KEY=sk-xxx` 再跑，或配 proxy `.env`，或在 settings.json 配 `ANTHROPIC_AUTH_TOKEN` |
+| `CC_AUTH_MODE=...` 启动即报错 | override 没配 key / passthrough 配了非 anthropic provider | 按 banner/报错提示修，或 unset 让它自动判定 |
+| 端口探测失败 | 自动重试 5 次均失败 | 极少见；可 `--proxy-port=N` 手动指定 |
+| 批跑结束提示"未采集到任何算子轨迹" | claude 没走 proxy（罕见；`--settings` 注入已实测优先于环境变量和 settings.json） | 检查 claude 版本是否过旧；确认终端里 `[trace] 本次采集端口: N` 后手动 `curl http://127.0.0.1:N/` 验证 proxy 在 |
 | 卡在 `准备 wait` | 某个算子还没跑完 | 正常等（看 ✅ 日志判断进度） |
 | `wait 返回` 后卡住 | 清洗阶段报错 | 看 `cleaned/clean.log` |
 | 清洗 0 PASS | 算子精度不达标或 JSON 格式不对 | 看 `cleaned/eval_report.json` 和 `check_report.json` |
+| 评测全 ERROR（`ModuleNotFoundError: msprof_perf_summary`） | skill 迁到 `community/ops` 后 `verification_ascendc.py` 的相对路径落空 | 更新到最新 `batch_evaluate.py`（自动注入 PYTHONPATH）；旧版可手动 `export PYTHONPATH=<cannbot-skills>/ops/ops-profiling/scripts` |
+| 评测大量 TIMEOUT | `--timeout` 太小，慢算子 clean build + 全量用例可达 400–600s | 用 `CLEAN_TIMEOUT` 调大（默认已为 1800s，建议不低于 900s） |
 
 ### 不重跑算子，只重新清洗
 
@@ -213,24 +274,37 @@ script/proxy/claude-code-proxy/cc_traces/batch_20260721_145351/cleaned/
 
 ```bash
 export EVAL_NPU_LIST="4,5"
+export CLEAN_JOBS=4            # 可选：并发数（默认 4）
+export CLEAN_TIMEOUT=1800      # 可选：单算子评测超时秒数（默认 1800）
 bash script/proxy/clean_pipeline.sh \
     script/proxy/claude-code-proxy/cc_traces/batch_xxxx/ \
     ./output/level_1 \
     script/proxy/claude-code-proxy/cc_traces/batch_xxxx/cleaned/
 ```
 
+> 慢算子（cholesky 等）clean build + 全量用例实测需 400–600s，`CLEAN_TIMEOUT` 建议不低于 900s，否则真通过的算子会被误判为 TIMEOUT（TIMEOUT 与 ERROR 一样强制整组进入 `fail/`）。
+
+> **精度验证脚本已内置**：`proxy/clean/eval/` 随工具一起分发，`batch_evaluate.py` 只使用内置的 `evaluate_ascendc.sh`，**不再搜索 `.claude/skills/` 或 `~/.claude/skills/`**。需要临时换版本时用 `--eval-script` 或 `EVAL_ASCENDC_SH` 显式覆盖；`OPS_PROFILING_SCRIPTS` 可覆盖 `msprof_perf_summary.py` 的位置（默认与验证脚本同目录）。
+
 ---
 
 ## 附：冒烟测试
 
-跑 2 个小算子验证全流程：
+**批跑**：跑 2 个小算子验证全流程：
 
 ```bash
 bash script/run_benchmark_ascendc.sh \
     --benchmark-dir /path/to/NPUKernelBench \
     --level 1 --ids "3,4" --npu-list "4,5" \
-    --output ./smoke_test \
-    --proxy-port=8799
+    --output ./smoke_test
 ```
 
 跑通后应该看到：算子目录 ✓ → 算子 db ✓ → `cleaned/pass/` 有合格样本 ✓。
+
+**交互模式**：一条命令快速验证（不进交互界面，`-p` 模式问一句就退）：
+
+```bash
+bash script/trace_claude.sh -- -p "回复:ok" --model <你的模型名>
+```
+
+跑通后应该看到：`[trace] proxy ready` + `[auth] mode=...` banner ✓ → claude 正常回复 ✓ → 退出后自动杀 proxy 并打印轨迹路径 ✓（该路径下 `trace.db` 存在）。
