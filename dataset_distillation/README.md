@@ -24,11 +24,15 @@ script/
 └── proxy/                        ← 所有支撑脚本（不用手动跑）
     ├── trace_proxy.sh              proxy 启停（端口自动探测）
     ├── clean_pipeline.sh            一键清洗（shell 串联 5 步，不依赖 claude）
-    ├── clean/                       4 个清洗 python 脚本
+    ├── clean/                       清洗脚本（含内置精度验证）
     │   ├── export_training.py
     │   ├── prepare_for_training.py
     │   ├── batch_evaluate.py
-    │   └── check_dataset.py
+    │   ├── check_dataset.py
+    │   └── eval/                    内置精度验证（无需外部 skill）
+    │       ├── evaluate_ascendc.sh
+    │       ├── verification_ascendc.py
+    │       └── msprof_perf_summary.py
     └── claude-code-proxy/           proxy 程序
         ├── server.py                   FastAPI 主程序
         ├── trace_db.py                 实时分库引擎
@@ -261,6 +265,8 @@ script/proxy/claude-code-proxy/cc_traces/batch_20260721_145351/cleaned/
 | 卡在 `准备 wait` | 某个算子还没跑完 | 正常等（看 ✅ 日志判断进度） |
 | `wait 返回` 后卡住 | 清洗阶段报错 | 看 `cleaned/clean.log` |
 | 清洗 0 PASS | 算子精度不达标或 JSON 格式不对 | 看 `cleaned/eval_report.json` 和 `check_report.json` |
+| 评测全 ERROR（`ModuleNotFoundError: msprof_perf_summary`） | skill 迁到 `community/ops` 后 `verification_ascendc.py` 的相对路径落空 | 更新到最新 `batch_evaluate.py`（自动注入 PYTHONPATH）；旧版可手动 `export PYTHONPATH=<cannbot-skills>/ops/ops-profiling/scripts` |
+| 评测大量 TIMEOUT | `--timeout` 太小，慢算子 clean build + 全量用例可达 400–600s | 用 `CLEAN_TIMEOUT` 调大（默认已为 1800s，建议不低于 900s） |
 
 ### 不重跑算子，只重新清洗
 
@@ -268,11 +274,17 @@ script/proxy/claude-code-proxy/cc_traces/batch_20260721_145351/cleaned/
 
 ```bash
 export EVAL_NPU_LIST="4,5"
+export CLEAN_JOBS=4            # 可选：并发数（默认 4）
+export CLEAN_TIMEOUT=1800      # 可选：单算子评测超时秒数（默认 1800）
 bash script/proxy/clean_pipeline.sh \
     script/proxy/claude-code-proxy/cc_traces/batch_xxxx/ \
     ./output/level_1 \
     script/proxy/claude-code-proxy/cc_traces/batch_xxxx/cleaned/
 ```
+
+> 慢算子（cholesky 等）clean build + 全量用例实测需 400–600s，`CLEAN_TIMEOUT` 建议不低于 900s，否则真通过的算子会被误判为 TIMEOUT（TIMEOUT 与 ERROR 一样强制整组进入 `fail/`）。
+
+> **精度验证脚本已内置**：`proxy/clean/eval/` 随工具一起分发，`batch_evaluate.py` 只使用内置的 `evaluate_ascendc.sh`，**不再搜索 `.claude/skills/` 或 `~/.claude/skills/`**。需要临时换版本时用 `--eval-script` 或 `EVAL_ASCENDC_SH` 显式覆盖；`OPS_PROFILING_SCRIPTS` 可覆盖 `msprof_perf_summary.py` 的位置（默认与验证脚本同目录）。
 
 ---
 

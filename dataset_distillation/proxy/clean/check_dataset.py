@@ -156,9 +156,39 @@ HARD_FAIL_RE = re.compile(
     r"全部失败|完全失败|"
     r"全量验证受限|"
     r"验证未通过|测试未通过|无法通过|"
-    r"环境错误|环境问题.*失败",
+    r"环境错误|环境问题.*失败|"
+    # 明确的运行时崩溃（AscendC/ACL），不是历史修复描述
+    r"ACL\s*stream\s*synchronize\s*failed|GM\s*address\s*accessed|"
+    r"core\s*exception|运行崩溃|段错误|segmentation\s*fault|core\s*dumped",
     re.I,
 )
+# 最终结论行（如 "最终结果: PASS (tilelang) | FAIL (ascendc)"）。
+# 它高于历史过程中的 PASS：目标后端 ascendc 明确 FAIL 时，整条样本判失败。
+FINAL_VERDICT_RE = re.compile(r"最终(?:结果|状态|判定)[:：]?\s*(.+)")
+
+
+def _final_verdict_fails(text: str) -> bool:
+    # 只看"最终结论"关键词之后的尾巴；跳过表头（如 "| 最终状态 | 性能... |"）
+    tails = []
+    for l in text.splitlines():
+        m = FINAL_VERDICT_RE.search(l)
+        if not m:
+            continue
+        tail = m.group(1)
+        if re.search(r"\bpass\b|\bfail\b|通过|失败|成功|未通过", tail, re.I):
+            tails.append(tail)
+    if not tails:
+        return False
+    tail = tails[-1]
+    low = tail.lower()
+    if "ascendc" in low:
+        parts = [p for p in re.split(r"[|;]", tail) if "ascendc" in p.lower()]
+        if parts:
+            return not any(re.search(r"\bpass\b|通过|成功", p, re.I)
+                           for p in parts)
+    return bool(re.search(r"\bfail\b|失败|未通过", tail, re.I))
+
+
 # R11 整文件级强失败信号：trace 中任意位置出现「Subagent 运行失败」即判 FAIL
 SUBAGENT_RUN_FAIL_RE = re.compile(r"Subagent\s*运行失败", re.I)
 
@@ -268,6 +298,12 @@ def _r8_verdict(last_text: str, full_text_main: str) -> Optional[str]:
     - 成功信号：先看最后一条，没有再看主 agent 全文（debug trace 的 PASS
       常在中间消息，如 "全量验证 | **PASS**（16/16）"）。
     """
+    # 最终结论优先：即使中间有 tilelang 的 50/50 PASS，只要最终结论里
+    # ascendc 是 FAIL，就判整条样本失败。
+    if _final_verdict_fails(full_text_main):
+        return ("R8 最终结论为失败（最终结果/最终状态中目标后端 ascendc 为 "
+                "FAIL），历史 PASS 不覆盖")
+
     # 用例比率部分通过：只在【没有任何全过信号】时才判失败（历史比率不否决最终全过）
     partial_fail: Optional[str] = None
     has_full_pass = False
@@ -833,12 +869,27 @@ def main() -> int:
         print("[check] 没有可检查的文件", file=sys.stderr)
         return 2
 
-    # R8 文本成功判定：仅作无真机评测时的回退。给了 --eval-report（无论文件
-    # 是否存在/可解析）成败都交给 R-eval，不跑 R8——真机评测优先于文本启发式。
+    # R8 文本成功判定：仅作无真机评测时的回退。给了 --eval-report 时成败交给
+    # R-eval（优先于文本启发式）；但报告必须真实存在且可解析——缺报告时
+    # fail-closed，绝不让“没评测”静默变成 pass。
     use_r8 = not args.eval_report
     if use_r8:
         print("[check] 未提供 --eval-report：启用 R8 文本成功判定（回退模式）")
     else:
+        eval_path = Path(args.eval_report)
+        if not eval_path.is_file():
+            print(f"[err] eval 报告不存在: {eval_path}；拒绝放行"
+                  "（pass/ 必须是真机评测通过的样本）", file=sys.stderr)
+            return 2
+        try:
+            _eval_pre = json.loads(eval_path.read_text(encoding="utf-8"))
+        except Exception as e:
+            print(f"[err] eval 报告无法解析: {e}；拒绝放行", file=sys.stderr)
+            return 2
+        if not isinstance(_eval_pre.get("ops"), dict) or not _eval_pre["ops"]:
+            print(f"[err] eval 报告缺少 ops 或为空: {eval_path}；拒绝放行",
+                  file=sys.stderr)
+            return 2
         print("[check] 已提供 --eval-report：成败由真机评测（R-eval）决定，R8 不生效")
 
     report_passed: List[Dict[str, Any]] = []
