@@ -43,6 +43,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import queue
 import re
 import subprocess
 import sys
@@ -300,18 +301,36 @@ def main() -> int:
         print(f"[err] {ops_root} 下没找到算子目录", file=sys.stderr)
         return 2
 
-    npu_info = f"，NPU={','.join(npu_list)}" if npu_list else ""
+    npu_info = f"，NPU={','.join(npu_list)}（卡池独占，一卡一任务）" if npu_list else ""
     print(f"[eval] {len(op_dirs)} 个算子，并发 {args.jobs}，超时 {args.timeout}s{npu_info}")
     print()
 
     results: Dict[str, Any] = {}
     start = time.time()
+    # 卡池领卡制：执行时领卡、结束归还（含失败/超时路径），保证任意时刻一卡最多
+    # 一个评测任务。
+    # 旧实现按提交序 i%len(npu_list) 预约分卡，与 worker 槽位按完成顺序复用相错位：
+    # 某任务慢/挂死时，后续绑同一张卡的任务会全部叠加到该卡上并发，互相争抢计算核，
+    # 引发 vector core / aicore timeout 型误杀（2026-11-20 批次因此误杀 2 个算子）。
+    # 新语义下实际并发 = min(jobs, 卡数)：worker 比 卡多时多余的 worker 阻塞等卡。
+    npu_pool: "queue.Queue[str]" = queue.Queue()
+    for n in npu_list:
+        npu_pool.put(n)
+
+    def _run_one_from_pool(op_dir: Path) -> Dict[str, Any]:
+        """从卡池领一张卡跑评测；无空闲卡则阻塞等待，跑完（含异常/超时）归还。"""
+        npu_id = npu_pool.get() if npu_list else None
+        try:
+            return run_one(op_dir, eval_script, scripts_dir, args.timeout,
+                           npu_id, extra_python_paths)
+        finally:
+            if npu_list:
+                npu_pool.put(npu_id)
+
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
         future_to_op = {}
-        for i, d in enumerate(op_dirs):
-            npu_id = npu_list[i % len(npu_list)] if npu_list else None
-            future_to_op[pool.submit(run_one, d, eval_script, scripts_dir, args.timeout,
-                                     npu_id, extra_python_paths)] = d.name
+        for d in op_dirs:
+            future_to_op[pool.submit(_run_one_from_pool, d)] = d.name
         for i, fut in enumerate(as_completed(future_to_op), 1):
             op_name = future_to_op[fut]
             try:
